@@ -8,7 +8,7 @@
 [![Generic badge](https://img.shields.io/badge/Woocommerce-6.0.0-96588a.svg)](https://woocommerce.com/)
 [![Generic badge](https://img.shields.io/badge/Wordpress-5.8.0-21759b.svg)](https://wordpress.com/)
 
-Plugin para [Woocommerce](https://woocommerce.com/) que habilita la psarela de pago de [Recurrente](https://recurrente.com/) como método de pago en el checkout de tú sitio web, implementar una pasarela de pago para realizar cobros en linea no tiene porque ser ciencia espacial.
+Plugin para [Woocommerce](https://woocommerce.com/) que habilita la pasarela de pago de [Recurrente](https://recurrente.com/) como método de pago en el checkout de tú sitio web, implementar una pasarela de pago para realizar cobros en linea no tiene porque ser ciencia espacial.
 
 ## Guía de uso
 A continuacion encontraras como configurar el plugin dentro de tu sitio web de [Wordpress](https://wordpress.com/).
