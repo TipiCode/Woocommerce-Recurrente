@@ -36,7 +36,9 @@ function Register_Recurrente_Order_status() {
 	}
 }
 add_action('init', 'Register_Recurrente_Order_status');
-
+/**
+ * Test coments
+ */
 
 /**
  * Function to register woocommerce order statuses
