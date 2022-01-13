@@ -31,6 +31,7 @@ Una vez instalado debes dirigirte al area de <strong>Woocommerce / Ajustes / Pag
 - <strong>Access Key : </strong> Clave Pública brindada por [Recurrente](https://recurrente.com/).
 - <strong>Secret Key : </strong> Clave Secreta brindada por [Recurrente](https://recurrente.com/).
 - <strong>Debug Log : </strong> Habilita la opcion d poder guardar un log.
+- <strong>Error message : </strong> Este es un mensaje personalizado que se le muestra al usuario al momento que ocurra un error.
 
 ### 🔑 Obtención de llaves para Test y Live
 Para obtener tus llaves de prueba y producción deber ir a [Recurrente](https://recurrente.com/), allí podrás crear tu cuenta y encontrarás instrucciones dentro de su documentación. Dentro del plugin puedes colocar ambas llaves ya sea modo Test o Live en las opciones de <strong>Access Key</strong> y <strong>Secret Key</strong> respectivamente.
