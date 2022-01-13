@@ -49,8 +49,12 @@ return array(
 		'title' => __('Debug Log', 'woocommerce'),
 		'type' => 'checkbox',
 		'label' => __('Enable logging', 'woocommerce'),
-		/* translators: %s: file path */
 		'description' => sprintf(__('Log file will be %s', 'woocommerce'), '<code>' . WC_Log_Handler_File::get_log_file_path('recurrente') . '</code>'),
 		'default' => 'no',
+	),
+	'error_msg' => array(
+		'title' => __('Error message', 'woocommerce'),
+		'type' => 'text',
+		'default' => 'Opps, ocurrio un error.',
 	),
 );

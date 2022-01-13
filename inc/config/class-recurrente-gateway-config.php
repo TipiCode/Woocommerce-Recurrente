@@ -56,4 +56,13 @@ class Recurrente_Gateway_Config {
 	public function get_access_key() {
 		return $this->gateway->get_option('access_key');
 	}
+	
+	/**
+	 * Get Error Message
+	 *
+	 * @return string
+	 */
+	public function get_error_msg() {
+		return $this->gateway->get_option('error_msg');
+	}
 }

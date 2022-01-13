@@ -90,6 +90,7 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 		$this->access_key = $this->get_option('access_key');
 		$this->secret_key = $this->get_option('secret_key');
 		$this->debug = 'yes' === $this->get_option('debug', 'no');
+		$this->error_msg = $this->get_option('error_msg');
 		self::$log_enabled = $this->debug;
 	}
 
@@ -179,7 +180,12 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 			$redirectUrl = $request_http->create_order($requestArr, $this);
 
 			if($redirectUrl == null || trim($redirectUrl["storefront_link"]) == "") {
-				wc_add_notice('An errror ocurred with Recurrente Payment Gateway, please try again later', 'error');
+				$error_msg = "Opps, ocurrio un error";
+				if(trim($this->get_option('error_msg')) != "") {
+					$error_msg = $this->get_option('error_msg');
+				}
+
+				wc_add_notice($error_msg, 'error');
 				wp_redirect(wc_get_checkout_url());
 				return false;
 			}
@@ -238,7 +244,12 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 			</script>
 			<?php
 		} else {
-			wc_add_notice('An errror ocurred with Recurrente Payment Gateway, please try again later', 'error');
+			$error_msg = "Opps, ocurrio un error";
+			if(trim($this->get_option('error_msg')) != "") {
+				$error_msg = $this->get_option('error_msg');
+			}
+
+			wc_add_notice($error_msg, 'error');
 			return false;
 		}
 	}
