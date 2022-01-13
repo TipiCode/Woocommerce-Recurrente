@@ -178,8 +178,9 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 			$request_http->place_request($requestArr);
 			$redirectUrl = $request_http->create_order($requestArr, $this);
 
-			if($redirectUrl == null) {
-				wc_add_notice('Error! Invalid configuration.', 'error');
+			if($redirectUrl == null || trim($redirectUrl["storefront_link"]) == "") {
+				wc_add_notice('An errror ocurred with Recurrente Payment Gateway, please try again later', 'error');
+				wp_redirect(wc_get_checkout_url());
 				return false;
 			}
 
@@ -237,7 +238,7 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 			</script>
 			<?php
 		} else {
-			wc_add_notice('Error! Invalid configuration.', 'error');
+			wc_add_notice('An errror ocurred with Recurrente Payment Gateway, please try again later', 'error');
 			return false;
 		}
 	}
@@ -283,7 +284,7 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 			if (empty($this->get_option('secret_key'))) {
 				add_settings_error('recurrente_error', esc_attr('settings_updated'), __('Invalid Secret Key'), 'error');
 			}
-			add_action('admin_notices', 'print_errors');
+			add_action('admin_notices', 'Print_Errors_recurrente');
 		}
 		if ('yes' !== $this->get_option('debug', 'no')) {
 			if (empty(self::$log)) {

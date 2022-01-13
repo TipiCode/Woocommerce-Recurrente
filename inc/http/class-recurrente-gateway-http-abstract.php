@@ -109,7 +109,14 @@ abstract class Recurrente_Gateway_Http_Abstract {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $header );
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($item));
-
+			// execute!
+			$response = json_decode(curl_exec($ch));
+			$resCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			if($resCode != 201){
+				$log['CreateUrl_responseCode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				$log['CreateUrl_responseMsg'] = $response;
+			}
+			curl_close($ch);
 
 			//Create user
 			$UserData = Array(
@@ -121,12 +128,14 @@ abstract class Recurrente_Gateway_Http_Abstract {
 			curl_setopt($chUser, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($chUser, CURLOPT_HTTPHEADER, $header );
 			curl_setopt($chUser, CURLOPT_POSTFIELDS, json_encode($UserData));
-			
-
 			// execute!
-			$response = json_decode(curl_exec($ch));
 			$responseUser = json_decode(curl_exec($chUser));
-
+			$userResCode = curl_getinfo($chUser, CURLINFO_HTTP_CODE);
+			if($resCode != 201){
+				$log['CreateUser_responseCode'] = curl_getinfo($chUser, CURLINFO_HTTP_CODE);
+				$log['CreateUser_responseMsg'] = $responseUser;
+			}
+			curl_close($chUser);
 
 			//Create checkout width priceId & UserId
 			$CheckoutData = Array(
@@ -144,16 +153,18 @@ abstract class Recurrente_Gateway_Http_Abstract {
 			curl_setopt($chCheckout, CURLOPT_POSTFIELDS, json_encode($CheckoutData));
 
 			$responseCheckout = json_decode(curl_exec($chCheckout));
+			$checkoutResCode = curl_getinfo($chCheckout, CURLINFO_HTTP_CODE);
+			if($checkoutResCode != 201){
+				$log['Checkout_responseCode'] = curl_getinfo($chCheckout, CURLINFO_HTTP_CODE);
+				$log['Checkout_responseMsg'] = $checkoutResCode;
+			}
+			// close the connection, release resources used
+			curl_close($chCheckout);
 
 			$res = Array(
 				"id"              => $response->id,
 				"storefront_link" => $responseCheckout->checkout_url
 			);
-
-			// close the connection, release resources used
-			curl_close($ch);
-			curl_close($chUser);
-			curl_close($chCheckout);
 
 			return $res;
 		} catch (Exception $e) {
