@@ -156,7 +156,7 @@ abstract class Recurrente_Gateway_Http_Abstract {
 			$checkoutResCode = curl_getinfo($chCheckout, CURLINFO_HTTP_CODE);
 			if($checkoutResCode != 201){
 				$log['Checkout_responseCode'] = curl_getinfo($chCheckout, CURLINFO_HTTP_CODE);
-				$log['Checkout_responseMsg'] = $checkoutResCode;
+				$log['Checkout_responseMsg'] = $responseCheckout;
 			}
 			// close the connection, release resources used
 			curl_close($chCheckout);
