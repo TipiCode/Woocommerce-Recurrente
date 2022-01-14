@@ -67,7 +67,6 @@ class Recurrente_Gateway extends WC_Payment_Gateway {
 
 		$this->id = 'recurrente';
 		$this->recurrente_icon = $this->get_option('recurrente_icon');
-		$this->icon = ( !empty($this->recurrente_icon) ) ? $this->recurrente_icon : apply_filters('recurrente_icon', plugins_url('assets/visaMaster.png', __FILE__)); // displayed on checkout page near your gateway name.
 		$this->has_fields = false; // in case you need a custom credit card form.
 		$this->method_title = 'Recurrente Payment Gateway';
 		$this->method_description = 'Recurrente Payment Gateway';

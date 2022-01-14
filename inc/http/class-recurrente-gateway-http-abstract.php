@@ -66,7 +66,7 @@ abstract class Recurrente_Gateway_Http_Abstract {
 	 * @return array|null
 	 * @throws Exception Exception.
 	 */
-	public function create_order( $requestArr,) {
+	public function create_order( $requestArr ) {
 		global  $woocommerce;
    		$myCurrency = get_option('woocommerce_currency');
 		$this->order_status = include dirname(__FILE__) . '/../order-status-recurrente.php';
