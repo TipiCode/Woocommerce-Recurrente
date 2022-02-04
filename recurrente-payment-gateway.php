@@ -3,11 +3,11 @@
  * Plugin Name: Recurrente Payment Gateway WooCommerce
  * Plugin URI: https://github.com/TipiCode/woocommerce-gateway-recurrente
  * Description: Recurrente Payment gateway extension for WooCommerce.
- * Version:     1.0.3
+ * Version:     1.0.4
+ * Requires PHP: 7.2
  * Author:      tipi(code)
  * Author URI: https://codingtipi.com
  * License:     MIT
- * Requires PHP: 8.0
  * WC requires at least: 5.8.0
  * WC tested up to: 6.0.0
  *
