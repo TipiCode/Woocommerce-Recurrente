@@ -68,7 +68,6 @@ abstract class Recurrente_Gateway_Http_Abstract {
 	 */
 	public function create_order( $requestArr ) {
 		global  $woocommerce;
-   		$myCurrency = get_option('woocommerce_currency');
 		$this->order_status = include dirname(__FILE__) . '/../order-status-recurrente.php';
 		$log['path'] = __METHOD__;
 		try {
@@ -79,12 +78,6 @@ abstract class Recurrente_Gateway_Http_Abstract {
 				'X-SECRET-KEY:' . $this->gateway->get_option('secret_key'),
 				'Content-type: application/json'
 			);
-
-			//Validate site currency
-			$currency = "GTQ";
-			if( $myCurrency == "USD") {
-				$currency = "USD";
-			}
 
 			//Create product
 			$item = Array(
@@ -98,7 +91,7 @@ abstract class Recurrente_Gateway_Http_Abstract {
 					"prices_attributes"             => Array(
 						"0" => Array(
 							"amount_as_decimal" => $requestArr["amount"],
-							"currency"          => $currency,
+							"currency"          => $requestArr["currency"],
 							"charge_type"       => "one_time"
 						)
 					)
@@ -113,6 +106,7 @@ abstract class Recurrente_Gateway_Http_Abstract {
 			$response = json_decode(curl_exec($ch));
 			$resCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			if($resCode != 201){
+				$log['Checkout_currency'] = $requestArr["currency"];
 				$log['CreateUrl_responseCode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 				$log['CreateUrl_responseMsg'] = $response;
 			}
