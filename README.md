@@ -101,8 +101,8 @@ Si no eres un desarrollador ¡No te preocupes! Aun puedes contribuir de diferent
 Cada ayuda nos acerca mas a nuestra meta final, tener un proyecto que pueda ser de utilidad para todos.
 
 # ¿Te fue útil este proyecto?
-¡Nos encanta la idea de poder ayudar a crecer tu proyecto! Nuestro esfuerzo como parte de todos los proyectos Open Source con los que contamos tienen como meta ser de ayuda para quien lo necesite, sabemos que muchas veces se requiere una solución para problemas en común, ya sea si estas iniciando un negocio o tienes un proyecto personal y que mejor manera de solucionar ese problema en común que todos juntos.  Si te fue útil nuestro proyecto puedes apoyar a mantenerlo con un pequeño gesto en forma de un [café](https://app.recurrente.com/c/ch_qhynsca9rooyqfdy) para nuestros desarrolladores que contribuyen en este proyecto.
+¡Nos encanta la idea de poder ayudar a crecer tu proyecto! Nuestro esfuerzo como parte de todos los proyectos Open Source con los que contamos tienen como meta ser de ayuda para quien lo necesite, sabemos que muchas veces se requiere una solución para problemas en común, ya sea si estas iniciando un negocio o tienes un proyecto personal y que mejor manera de solucionar ese problema en común que todos juntos.  Si te fue útil nuestro proyecto puedes apoyar a mantenerlo con un pequeño gesto en forma de un [café](https://app.recurrente.com/s/aurora-u2u7iw/cafe-grande-con-leche) para nuestros desarrolladores que contribuyen en este proyecto.
 
-<a href="https://app.recurrente.com/c/ch_qhynsca9rooyqfdy">
+<a href="https://app.recurrente.com/s/aurora-u2u7iw/cafe-grande-con-leche">
 <img src="https://tipi-pod.sfo3.cdn.digitaloceanspaces.com/github%2FBuy%20me%20a%20coffee.jpg">
 </a>
