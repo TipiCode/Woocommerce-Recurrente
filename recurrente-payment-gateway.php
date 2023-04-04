@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: Recurrente Payment Gateway WooCommerce
- * Plugin URI: https://github.com/TipiCode/woocommerce-gateway-recurrente
- * Description: Recurrente Payment gateway extension for WooCommerce.
+ * Plugin Name: Pasarela de pagos Recurrente
+ * Plugin URI: https://github.com/TipiCode/Woocommerce-Recurrente
+ * Description: Plugin para Woocommerce que habilita la pasarela de pago Recurrente como método de pago en el checkout de tú sitio web.
  * Version:     1.0.5
  * Requires PHP: 7.2
  * Author:      tipi(code)
  * Author URI: https://codingtipi.com
  * License:     MIT
  * WC requires at least: 5.8.0
- * WC tested up to: 6.0.0
+ * WC tested up to: 7.5.0
  *
- * @package RecurrenteGateway
+ * @package WoocommerceRecurrente
 */
 
 function Register_Recurrente_Order_status() {
