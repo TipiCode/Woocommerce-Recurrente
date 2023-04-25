@@ -23,8 +23,48 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
             
 			add_action( 'init', array( $this, 'register_recurrente_post_type' ), 0 );
 			add_action( 'admin_menu', array( $this, 'create_recurrente_submenus' ), 0 );
+            add_action( 'wp_loaded', array( $this, 'save_recurrente_configs' ), 12 );
+
+            add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_css' ) );
 			
 		}
+
+        /**
+		 * Import admin css for card styling,
+		 */
+         public function admin_enqueue_css(){
+            wp_enqueue_style( 'WoocommerceRecurrente-admin-css', RECURRENTE_ASSETS_DIR_URL . '/css/admin.css' );
+         }
+
+         /**
+		 * Save the credentials to database,
+		 */
+         public function save_recurrente_configs(){
+
+            if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) ) ) {
+				if ( empty( ( sanitize_text_field( wp_unslash( $_POST['save_recurrente_credentials'] ) ) ) ) ) {
+					return;
+				} else{
+	
+				
+					try {
+                        update_option('recurrente_secret_key', sanitize_text_field($_POST['secret_key']));
+                        update_option('recurrente_public_key', sanitize_text_field($_POST['public_key']));
+        
+                        $location = $_SERVER['HTTP_REFERER'].'&status=success';
+                        wp_safe_redirect($location);
+                        exit();
+                    } catch (\Throwable $th) {
+                        $location = $_SERVER['HTTP_REFERER'].'&status=error';
+                        wp_safe_redirect($location);
+                        exit();
+                    }
+
+				}
+			}
+        }
+
+
 
         /**
 		 * Create recurrente submenus,
