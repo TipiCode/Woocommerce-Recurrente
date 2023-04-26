@@ -21,8 +21,8 @@ if(isset($_GET['status'])){
 ?>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="card " style="border-radius:10px">
+    <div class="col">
+        <div class="card " style="border-radius:10px;max-width:100% !important">
             <div class="card-header">
                 <h3>Llaves del API</h3>
             </div>
@@ -47,16 +47,16 @@ if(isset($_GET['status'])){
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card " style="border-radius:10px">
+    <div class="col">
+        <div class="card " style="border-radius:10px;max-width:100% !important">
             <div class="card-header">
                 <div class="card-title">
-                    <h3>Como lalal asdas ??? </h3>
+                    <h3>¿Cómo conseguir las llaves? </h3>
                 </div>
             </div>
             <hr>
             <div class="card-body">
-                <p style="color:grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id aliquet sem. In et mattis magna, et sagittis dolor. Duis sed metus orci. Aenean vestibulum arcu sit amet odio elementum, sed lacinia risus fermentum. Cras enim nibh, posuere at eleifend sed, sollicitudin sit amet turpis. Nunc libero velit, mollis eu libero eu, egestas bibendum velit. Nam eu aliquam odio. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam vitae bibendum justo. In venenatis, purus condimentum fringilla aliquet, leo odio porta mauris, volutpat finibus risus nisl sit amet purus. Phasellus luctus lacinia ligula, eu hendrerit tortor convallis sit amet. Aenean semper odio quis elit fermentum ullamcorper quis vitae elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas euismod odio euismod felis commodo placerat. Donec id egestas orci. </p>
+                <p style="color:grey">Puedes conseguir las llaves desde tu cuenta de recurrente, en la opción de configuración (Icono de los usuarios) y luego en la opción de “Desarrolladores y API”.</p>
             </div>
         </div>
     </div>

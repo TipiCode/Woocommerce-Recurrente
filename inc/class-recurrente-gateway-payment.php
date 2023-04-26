@@ -120,8 +120,8 @@ class Recurrente_Gateway_Payment {
 
 	public function deleteProduct($prodId) {
 		$header  = Array(
-			'X-PUBLIC-KEY:' . $this->gateway->get_option('access_key'),
-			'X-SECRET-KEY:' . $this->gateway->get_option('secret_key'),
+			'X-PUBLIC-KEY:' . get_option('recurrente_public_key'),
+			'X-SECRET-KEY:' . get_option('recurrente_secret_key'),
 			'Content-type: application/json'
 		);
 
