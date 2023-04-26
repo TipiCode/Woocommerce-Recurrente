@@ -33,12 +33,12 @@ if(isset($_GET['status'])){
                         <?php wp_nonce_field( ); ?> 
                         <div class="form-group">
                             <label for="public_key">Clave Publica</label>
-                            <input type="text" name="public_key" id="public_key" class="form-control" value="<?= get_option("recurrente_public_key", '') ?>">
+                            <input type="text" name="public_key" id="public_key" class="form-control" value="<?= $this->gateway->get_option('access_key') ?>">
                         </div>
                         
                         <div class="form-group" style="margin-top:10px">
                             <label for="secret_key">Clave Secreta</label>
-                            <input type="text" name="secret_key" id="secret_key" class="form-control" value="<?= get_option("recurrente_secret_key", '') ?>">
+                            <input type="text" name="secret_key" id="secret_key" class="form-control" value="<?= $this->gateway->get_option('secret_key') ?>">
                         </div>
                         <input type="hidden" name="save_recurrente_credentials" value="submit">
                         <button class="btn btn-primary" type="submit">Guardar</button>

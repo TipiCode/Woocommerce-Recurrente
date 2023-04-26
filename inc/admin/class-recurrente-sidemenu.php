@@ -17,9 +17,18 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
 	class Recurrente_Side_Menu {
 
         /**
+         * Gateway
+         *
+         * @var Recurrente_Gateway $gateway
+         */
+        protected $gateway;
+
+        /**
 		 *  Constructor.
 		 */
 		public function __construct() {
+
+            $this->gateway = Recurrente_Gateway::get_instance();
             
 			add_action( 'init', array( $this, 'register_recurrente_post_type' ), 0 );
 			add_action( 'admin_menu', array( $this, 'create_recurrente_submenus' ), 0 );
@@ -48,8 +57,8 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
 	
 				
 					try {
-                        update_option('recurrente_secret_key', sanitize_text_field($_POST['secret_key']));
-                        update_option('recurrente_public_key', sanitize_text_field($_POST['public_key']));
+                        $this->gateway->update_option('secret_key', sanitize_text_field($_POST['secret_key']));
+                        $this->gateway->update_option('access_key', sanitize_text_field($_POST['public_key']));
         
                         $location = $_SERVER['HTTP_REFERER'].'&status=success';
                         wp_safe_redirect($location);
