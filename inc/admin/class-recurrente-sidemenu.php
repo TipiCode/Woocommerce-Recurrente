@@ -32,9 +32,10 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
             
 			add_action( 'init', array( $this, 'register_recurrente_post_type' ), 0 );
 			add_action( 'admin_menu', array( $this, 'create_recurrente_submenus' ), 0 );
-            add_action( 'wp_loaded', array( $this, 'save_recurrente_configs' ), 12 );
+            add_action( 'wp_loaded', array( $this, 'save_recurrente_configs_and_toggle_gateway' ), 12 );
 
             add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_css' ) );
+            
 			
 		}
 
@@ -48,27 +49,45 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
          /**
 		 * Save the credentials to database,
 		 */
-         public function save_recurrente_configs(){
-
-            if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) ) ) {
-				if ( empty( ( sanitize_text_field( wp_unslash( $_POST['save_recurrente_credentials'] ) ) ) ) ) {
+         public function save_recurrente_configs_and_toggle_gateway(){
+             if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) ) ) {
+				if ( ! isset( $_POST['save_recurrente_credentials'] ) 
+                    && ! isset( $_POST['toggle_recurrete_gateway'] ) ) {
 					return;
 				} else{
 	
-				
-					try {
-                        $this->gateway->update_option('secret_key', sanitize_text_field($_POST['secret_key']));
-                        $this->gateway->update_option('access_key', sanitize_text_field($_POST['public_key']));
-        
+                    if( ! empty( ( sanitize_text_field( wp_unslash( $_POST['save_recurrente_credentials'] ) ) ) )){
+                        try {
+                            $this->gateway->update_option('secret_key', sanitize_text_field($_POST['secret_key']));
+                            $this->gateway->update_option('access_key', sanitize_text_field($_POST['public_key']));
+            
+                            $location = $_SERVER['HTTP_REFERER'].'&status=success';
+                            wp_safe_redirect($location);
+                            exit();
+                        } catch (\Throwable $th) {
+                            $location = $_SERVER['HTTP_REFERER'].'&status=error';
+                            wp_safe_redirect($location);
+                            exit();
+                        }
+                    } 
+
+                    if(! empty( ( sanitize_text_field( wp_unslash( $_POST['toggle_recurrete_gateway'] ) ) ) )){
+                        if( 'disable' == sanitize_text_field( wp_unslash( $_POST['toggle_recurrete_gateway'] ) ) ){
+                            // Get the recurrente Gateway
+                            $recurrente = new Recurrente_Gateway();
+                            $recurrente->update_option('enabled','no');
+                            
+                        }else{
+                            $recurrente = new Recurrente_Gateway();
+                            $recurrente->update_option('enabled','yes');
+                        }
+
                         $location = $_SERVER['HTTP_REFERER'].'&status=success';
                         wp_safe_redirect($location);
                         exit();
-                    } catch (\Throwable $th) {
-                        $location = $_SERVER['HTTP_REFERER'].'&status=error';
-                        wp_safe_redirect($location);
-                        exit();
                     }
-
+					
+                    return;
 				}
 			}
         }
