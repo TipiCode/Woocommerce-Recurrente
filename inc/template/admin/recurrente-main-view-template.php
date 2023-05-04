@@ -83,13 +83,13 @@ $isActive = $recurrente->enabled == 'yes' ? true : false;
                 </div>
                 <div class="row">
                     <p>Nombre</p>
-                    <h3>Comercio</h3>
+                    <h3><?= get_bloginfo('name') ?></h3>
                 </div>
                 <div class="row">
                     <p>Moneda</p>
                     <div style="margin-top: -0.5rem;">
                         <h1 style="float:left"><?= $currency_code ?></h1>
-                        <?php  if($currency_code !== 'USD' || $currency_code !== 'GTQ'){ ?>
+                        <?php  if(!($currency_code == 'USD' || $currency_code == 'GTQ')){ ?>
                             <i class="dashicons dashicons-warning card-i" style="color:red;"></i>
 <?php                   } ?>
                     </div>
