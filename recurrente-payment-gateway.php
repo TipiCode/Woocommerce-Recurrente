@@ -14,6 +14,16 @@
  * @package WoocommerceRecurrente
 */
 
+// useful constant which can be used in whole plugin
+
+defined( 'RECURRENTE_PLUGIN_FILE' ) || define( 'RECURRENTE_PLUGIN_FILE', __FILE__ );
+defined( 'RECURRENTE_PLUGIN_URL' ) || define( 'RECURRENTE_PLUGIN_URL', plugin_dir_url( RECURRENTE_PLUGIN_FILE ) );
+defined( 'RECURRENTE_ABSPATH' ) || define( 'RECURRENTE_ABSPATH', dirname( __FILE__ ) );
+defined( 'RECURRENTE_ASSETS_DIR_URL' ) || define( 'RECURRENTE_ASSETS_DIR_URL', RECURRENTE_PLUGIN_URL . 'inc/assets' );
+
+
+// Helper functions
+
 function Register_Recurrente_Order_status() {
 	$statuses = include 'inc/order-status-recurrente.php';
 	foreach ($statuses as $status) {
@@ -109,6 +119,9 @@ function Recurrente_Init_Gateway_class() {
 	}
 	include_once 'inc/class-recurrente-gateway.php';
 	Recurrente_Gateway::get_instance()->init_hooks();
+	if(is_admin())
+		include_once 'inc/admin/class-recurrente-sidemenu.php';
+	
 }
 
 // define the woocommerce_gateway_icon callback
