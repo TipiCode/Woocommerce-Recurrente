@@ -1,3 +1,8 @@
+#wpbody-content{
+    margin-top: 10vh;
+    margin-left: 3vh;
+
+}
 .alert {
     position: relative;
     padding: .75rem 1.25rem;
@@ -7,9 +12,12 @@
 }
 
 .alert-success {
-    color: #155724;
+    color: #4ac26b !important;
     background-color: #d4edda;
-    border-color: #c3e6cb
+    border-color: #c3e6cb;
+    border-radius: 10px;
+    font-weight: bold;
+    width: 75vh;
 }
 
 .alert-danger {
@@ -49,8 +57,18 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+}
+
+.row-llaves {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
     margin-right: -15px;
-    margin-left: -15px
+    margin-left: -15px;
+    max-width:100vh;
+    gap:2rem;
 }
 
 .col {
@@ -60,6 +78,15 @@
     -ms-flex-positive: 1;
     flex-grow: 1;
     max-width: 100%
+}
+
+.col-llaves{
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: fit-content;
 }
 
 .card-i {
@@ -88,7 +115,8 @@
 
 .btn-primary {
     color: #fff;
-    background-color: #007bff;
+    background-color: #6057f2;
+    padding: .2rem 8rem;
     border-color: #007bff
 }
 
@@ -110,13 +138,13 @@
 .btn-secondary {
     color: #fff;
     background-color: #6c757d;
-    border-color: #6c757d
+    border-color: #ebebeb;
 }
 
 .btn-secondary:hover {
     color: #fff;
     background-color: #5a6268;
-    border-color: #545b62
+    border-color: #ebebeb;
 }
 
 .btn-secondary.focus,
@@ -128,11 +156,13 @@
 .btn-secondary:disabled {
     color: #fff;
     background-color: #6c757d;
-    border-color: #6c757d
+    border-color: #ebebeb;
 }
 
 .btn:not(:disabled):not(.disabled) {
-    cursor: pointer
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .btn:not(:disabled):not(.disabled).active,
@@ -153,7 +183,7 @@
     color: #495057;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: 1px solid #ebebeb36 !important;
     border-radius: .25rem;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
 }
@@ -213,12 +243,46 @@
     border-radius: .25rem
 }
 
-.card-header {
-    padding: .75rem 1.25rem;
-    margin-bottom: 0;
-    background-color: rgba(0, 0, 0, .03);
-    border-bottom: 1px solid rgba(0, 0, 0, .125)
+.card-conseguir-llaves{
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #41414136 !important;
+    border-radius: 25px;
+    margin-top: 0;
+    padding: 1rem;
+    margin-right: 18vh;
 }
+.card-llaves{
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    max-width: fit-content;
+    padding-top: 0rem;
+    /*padding: .5rem 1rem;*/
+    background-color: #fff;
+    border-radius: 25px;
+    border: 1px solid #41414136 !important;
+}
+
+
 
 .card-body {
     -webkit-box-flex: 1;
@@ -227,6 +291,109 @@
     padding: 1.25rem
 }
 
+.card-body-conseguir-llaves{
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
 .card-title {
     margin-bottom: .75rem
+}
+
+
+
+/*CSS pagina de incio*/
+
+.row-estado{
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-wrap: wrap;
+width: fit-content;
+gap: 1rem;
+}
+.row-activo{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: 2vh;
+}
+
+.btn-primary-activar{
+    padding: .7rem 1.5rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+    border: 1px solid #6056f1 ;
+    margin-right: 13px;
+}
+.btn-primary-estado{
+    color: #fff;
+    background-color: #6057f2;
+    border-radius: 13px;
+    padding: .5rem 1.2rem;
+    font-weight: 400;
+    border-color: #007bff
+}
+.btn-danger{
+    background-color: #00000000;
+    color: #fb1c1c;
+    margin-top: 1vh;
+    padding: .5rem 1rem;
+    border-radius: 13px;
+    border: 1px solid #41414136 ;
+}
+.card-inicio{
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+    width: 100%;
+
+}
+
+.card-body-inicio{
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1rem 2.4rem;
+    border: 1px solid #54616c1f;
+    border-radius: 20px;
+}
+.row-general{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+}
+
+.row-datos{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.btn-secondary.disabled, .btn-secondary:disabled{
+    padding: .5rem 1.2rem;
+    border-radius: 10px;
+    background-color: #bfbfbf;
+}
+
+.col23{
+    background-image: url(http://localhost:10005/wp-content/uploads/2023/05/buy-me-a-coffee.jpg);
 }
