@@ -139,7 +139,7 @@ if ( ! class_exists( 'Recurrente_Side_Menu' ) ) {
                 'has_archive'        => true,
                 'hierarchical'       => false,
                 'menu_position'      => null,
-                'menu_icon'          => RECURRENTE_ASSETS_DIR_URL .'/recurrente-logo.svg',
+                'menu_icon'          => RECURRENTE_ASSETS_DIR_URL .'/recurrente-logo.png',
                 'supports'           => array( 'title', 'author', 'comments' ),
                 'capability_type'    => 'post',
                 'capabilities'       => array(
