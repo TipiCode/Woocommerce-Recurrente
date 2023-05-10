@@ -101,19 +101,19 @@ $isActive = $recurrente->enabled == 'yes' ? true : false;
     </div>
 </div>
 
-<div class="row"  style="width:100vh; gap: 2rem;">
+<div class="row"  style="width:fit-content; gap: 1.8rem;">
     <div class="col">
-        <div class="card-inicio" style="border-radius:20px;max-height: 200px">
+        <div class="card-inicio" style="border-radius:20px;max-height: 200px; width: fit-content;">
            
-            <div class="card-body-inicio" style="padding-right: 12vh;     padding-bottom: 3.8rem;">
-                <div class="row" >
-                    <p class="col" style="color: #999999; font-size: 11px; font-weight: bold; ">Metodo de cobro</p>
+            <div class="card-body-inicio" style="padding-right: 26.5vh;     width: fit-content;     padding-bottom: 3.8rem;">
+                <div class="row" style="    width: fit-content;" >
+                    <p class="col" style="color: #999999; font-size: 11px; font-weight: bold;  ">Metodo de cobro</p>
                 </div>
-                <div class="row">
+                <div class="row" style="max-width: 100%; gap: 3rem;     display: -webkit-inline-box;">
                     <div class="col">
                         <button class="btn btn-primary-estado">Simple</button>
                     </div>
-                    <div class="col" style="margin-left: -30%;">
+                    <div class="col" style="margin-left: 30px;">
                         <button class="btn btn-secondary disabled" data-toggle="tooltip" title="Coming Soon">Recurrente</button>
                     </div>
                 </div>
@@ -121,12 +121,11 @@ $isActive = $recurrente->enabled == 'yes' ? true : false;
         </div>
     </div>
     <div class="col">
-        <div class="card-inicio" style="border-radius:20px;max-height: 200px;     margin-right: 13vh; width: fit-content;">
+        <div class="card-inicio" style="border-radius:20px;max-height: 200px;    margin-right: 0vh; width: fit-content;">
            
-            <div class="card-body-inicio" style="padding-left:1.2rem;     padding-right: 2rem;">
+            <div class="card-body-inicio" style="padding-left:1.2rem;     padding-right: 1.2rem;">
                 <div class="row" style="7rem">
-                <div class="col" style=" width:fit-content;   align-items: center; display: flex;">
-                    <img  style="width:80%;" src="http://localhost:10005/wp-content/uploads/2023/05/buy-me-a-coffee.jpg" alt="imagen">
+                <div class="col col23" style=" width:fit-content;   align-items: center; display: flex;">
                     
                 </div>
                 <div class="col" >
