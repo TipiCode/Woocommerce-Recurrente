@@ -402,4 +402,16 @@ gap: 1rem;
     background-position-y: 15px;
 }
 
+.grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: fit-content;
+}
 
+@media(max-width:1060px){
+.extra{
+   
+    margin-right: 5% !important;
+}
+}
