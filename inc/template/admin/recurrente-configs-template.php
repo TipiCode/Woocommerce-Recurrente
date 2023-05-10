@@ -55,7 +55,7 @@ if(isset($_GET['status'])){
                 </div>
             </div>
             <div class="card-body-conseguir-llaves">
-                <p style="color:grey; margin:0 0;">Puedes conseguir las llaves desde tu cuenta de recurrente, en la opción de configuración (Icono de los usuarios) y luego en la opción de “Desarrolladores y API”.</p>
+                <p style="color:grey; margin:0 0; font-size:14px;">Puedes conseguir las llaves desde tu cuenta de recurrente, en la opción de configuración (Icono de los usuarios) y luego en la opción de “Desarrolladores y API”.</p>
             </div>
         </div>
     </div>
