@@ -61,17 +61,7 @@ Tambien puedes simplemente clona el repositorio, genera un archivo .Zip y súbel
 Recuerda que [Woocommerce](https://woocommerce.com/) debe de estar instalado en el sitio para poder habilitar el plugin.
 
 ### ⚙️ Configuración
-Una vez instalado debes dirigirte al area de <strong>Woocommerce / Ajustes / Pagos</strong> , aqui podras encontrar tu forma de pago bajo el nombre de <strong>Recurrente Payment Gateway</strong> aqui podrás gestionar las opciones del plugin. 
-
-<strong>Opciones de configuración</strong>
-- <strong>Activar/Desactivar :</strong> Con esta opción puede rápidamente habilitar o deshabilitar la pasarela de pago sin desinstalar el plugin.
-- <strong>Título :</strong> Nombre que se le mostrará al usuario al seleccionar la opción de pago.
-- <strong>Descripción :</strong> Descripcion adicional que se le mostrara al usuario al seleccionar la opción de pago.
-- <strong>Status of new order :</strong> Estado el cual [Woocommerce](https://woocommerce.com/) colocará cuando una orden es creada, este estado cambia a Completed cuando el checkout de recurrente regresa Success.
-- <strong>Access Key : </strong> Clave Pública brindada por [Recurrente](https://recurrente.com/).
-- <strong>Secret Key : </strong> Clave Secreta brindada por [Recurrente](https://recurrente.com/).
-- <strong>Debug Log : </strong> Habilita la opcion d poder guardar un log.
-- <strong>Error message : </strong> Este es un mensaje personalizado que se le muestra al usuario al momento que ocurra un error.
+Una vez instalado debes dirigirte a la opción de Recurrente que te aparecerá en el menú de WordPress, desde acá podrás activar o desactivar el plugin, así como configurar tus llaves del API con tan solo unos clics. 
 
 ### 🔑 Obtención de llaves para Test y Live
 Para obtener tus llaves de prueba y producción deber ir a [Recurrente](https://recurrente.com/), allí podrás crear tu cuenta y encontrarás instrucciones dentro de su documentación. Dentro del plugin puedes colocar ambas llaves ya sea modo Test o Live en las opciones de <strong>Access Key</strong> y <strong>Secret Key</strong> respectivamente.
