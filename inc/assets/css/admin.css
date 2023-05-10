@@ -395,5 +395,11 @@ gap: 1rem;
 }
 
 .col23{
-    background-image: url(http://localhost:10005/wp-content/uploads/2023/05/buy-me-a-coffee.jpg);
+    background-image: url(../buy-me-a-coffee.jpg);
+
+    background-size:80%;
+    background-repeat: no-repeat;
+    background-position-y: 15px;
 }
+
+
