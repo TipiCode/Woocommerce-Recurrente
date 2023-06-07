@@ -1,7 +1,6 @@
-#wpbody-content{
-    margin-top: 10vh;
+.main {
+    margin-top: 2vh;  
     margin-left: 3vh;
-
 }
 .alert {
     position: relative;
@@ -395,23 +394,5 @@ gap: 1rem;
 }
 
 .col23{
-    background-image: url(../buy-me-a-coffee.jpg);
-
-    background-size:80%;
-    background-repeat: no-repeat;
-    background-position-y: 15px;
-}
-
-.grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    max-width: fit-content;
-}
-
-@media(max-width:1060px){
-.extra{
-   
-    margin-right: 5% !important;
-}
+    background-image: url(http://localhost:10005/wp-content/uploads/2023/05/buy-me-a-coffee.jpg);
 }
