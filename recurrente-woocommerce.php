@@ -14,6 +14,10 @@
  * @package WoocommerceRecurrente
 */
 
+if ( ! defined( 'ABSPATH' ) ) { 
+  exit; // Exit if accessed directly
+}
+
 
 add_action( 'plugins_loaded', 'recurrente_init', 0 );
 function recurrente_init() {
@@ -21,12 +25,14 @@ function recurrente_init() {
   if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
   include_once ('classes/recurrente.php') ;
   // class add it too WooCommerce
-  add_filter( 'woocommerce_payment_gateways', 'add_recurrente_gateway' );
-  function add_recurrente_gateway( $methods ) {
-	$methods[] = 'Recurrente';
-	return $methods;
-  }
+  //Recurrente::get_instance()->init_hooks();
 }
+
+add_filter( 'woocommerce_payment_gateways', 'add_recurrente_gateway' );
+    function add_recurrente_gateway( $methods ) {
+	  $methods[] = 'Recurrente';
+	  return $methods;
+  }
 // Add custom action links
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'recurrente_action_links' );
 function recurrente_action_links( $links ) {
@@ -83,3 +89,19 @@ function recurrente_register_order_approval_payment_method_type() {
         }
     );
 }
+
+// define the woocommerce_gateway_icon callback
+function filter_woocommerce_gateway_icon( $icon, $this_id ) {	
+	if($this_id == "recurrente") {
+		$icon = "<img style='max-width: 100px;' src='".plugins_url('assets/providers.png', __FILE__)."' alt='card providers' />";
+	}
+	return $icon;
+}
+add_filter( 'woocommerce_gateway_icon', 'filter_woocommerce_gateway_icon', 10, 2 );
+
+add_filter('woocommerce_thankyou_order_received_text', 'woo_change_order_received_text', 10, 2 );
+function woo_change_order_received_text( $str, $order ) {
+  $customer_order = wc_get_order( $order );
+  return sprintf( "Gracias, %s!", esc_html( $customer_order->get_billing_first_name() ) );
+}
+

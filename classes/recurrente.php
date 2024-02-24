@@ -12,8 +12,9 @@
             $this->method_description = __( "Plugin de Recurrente para WooCommerce", 'recurrente' );
             // vertical tab title
             $this->title = __( "Recurrente", 'recurrente' );
-            $this->icon = null;
+            $this->icon = $this->get_option('icon');
             $this->has_fields = false;
+            $this->description = "<img src".$this->icon."/>";
             
             // setting defines
             $this->init_form_fields();
@@ -28,6 +29,7 @@
             // further check of SSL if you want
             add_action( 'admin_notices', array( $this,  'do_ssl_check' ) );
             add_action( 'admin_notices', array( $this,  'validate_activation' ) );
+            add_action('woocommerce_api_recurrente', array($this, 'recurrente_callback'));
 
             // Save settings
             if ( is_admin() ) {
@@ -69,12 +71,23 @@
         );    
       }
 
+
       public static function get_instance() {
-        if (!isset(self::$instance)) {
+        if (is_null(self::$instance)) {
           self::$instance = new self();
         }
         return self::$instance;
       }
+
+      public function recurrente_callback(){
+        $status_id = $_GET["status"];
+        $order_id = $_GET["order"];
+        $order = wc_get_order( $order_id );
+        $redirect_url = $order->get_checkout_order_received_url();
+        $order->add_order_note( 'Recurrente: '.'Se retorna a sitio web.' );
+        wp_safe_redirect($redirect_url);
+      }
+
       // Response handled for payment gateway
       public function process_payment( $order_id ) {
         include dirname(__FILE__) . '/../utils/curl.php';
@@ -112,6 +125,9 @@
         if ( $checkout_transaction != 201 ) //Valida el return del status code 
           $this->fail();
 
+        $customer_order->add_order_note( 'Recurrente: '.'Se inicializó el proceso de pago.' ); //Actualizar los comentarios 
+        $customer_order->update_meta_data( 'recurrente_checkout_id', $checkout->id ); //Agregar el Id del checkout en la orden.
+        $customer_order->save();
         return array(
           'result'   => 'success',
           'redirect' => $checkout->url,

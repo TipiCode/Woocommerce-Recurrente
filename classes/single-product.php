@@ -34,8 +34,8 @@ class Single_Product {
                 "phone_requirement"             => "none",
                 "address_requirement"           => "none",
                 "billing_info_requirement"      => "none",
-                "cancel_url"                    => site_url() . "/wc-api/recurrenteonline?status=c",
-                "success_url"                   => site_url() . "/wc-api/recurrenteonline?status=s",
+                "cancel_url"                    => site_url() . "?wc-api=recurrente&status=0&order=".$this->customer_order->id,
+                "success_url"                   => site_url() . "?wc-api=recurrente&status=1&order=".$this->customer_order->id,
                 "prices_attributes"             => Array(
                     "0" => Array(
                         "amount_as_decimal" => $this->customer_order->order_total,

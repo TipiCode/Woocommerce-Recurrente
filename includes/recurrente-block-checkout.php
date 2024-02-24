@@ -4,11 +4,11 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 final class WC_Recurrente_Blocks extends AbstractPaymentMethodType {
 
     private $gateway;
-    protected $name = 'Recurrente';// your payment gateway name
+    protected $name = 'recurrente';// your payment gateway name
 
     public function initialize() {
         $this->settings = get_option( 'recurrente_settings', [] );
-        $this->gateway = new Recurrente();
+        $this->gateway = Recurrente::get_instance();
     }
 
     public function is_active() {
@@ -40,7 +40,8 @@ final class WC_Recurrente_Blocks extends AbstractPaymentMethodType {
     public function get_payment_method_data() {
         return [
             'title' => $this->gateway->title,
-            'description' => $this->gateway->description,
+            'description' => $this->gateway->method_description,
+            'icon' => $this->gateway->icon,
         ];
     }
 
