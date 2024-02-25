@@ -96,6 +96,7 @@ function filter_woocommerce_gateway_icon( $icon, $this_id ) {
 		$icon = "<img style='max-width: 100px;' src='".plugins_url('assets/providers.png', __FILE__)."' alt='card providers' />";
 	}
 	return $icon;
+
 }
 add_filter( 'woocommerce_gateway_icon', 'filter_woocommerce_gateway_icon', 10, 2 );
 
@@ -104,4 +105,3 @@ function woo_change_order_received_text( $str, $order ) {
   $customer_order = wc_get_order( $order );
   return sprintf( "Gracias, %s!", esc_html( $customer_order->get_billing_first_name() ) );
 }
-

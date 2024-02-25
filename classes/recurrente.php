@@ -29,7 +29,7 @@
             // further check of SSL if you want
             add_action( 'admin_notices', array( $this,  'do_ssl_check' ) );
             add_action( 'admin_notices', array( $this,  'validate_activation' ) );
-            add_action('woocommerce_api_recurrente', array($this, 'recurrente_callback'));
+            add_action('woocommerce_api_recurrente', array($this, 'redirect_callback'));
 
             // Save settings
             if ( is_admin() ) {
@@ -79,13 +79,36 @@
         return self::$instance;
       }
 
-      public function recurrente_callback(){
+      public function redirect_callback(){
+        if (isset($_GET["status"])) {
+          $this->answer_redirect();
+        }else{
+          $this->process_webhook();
+        }
+      }
+
+      public function answer_redirect(){
         $status_id = $_GET["status"];
         $order_id = $_GET["order"];
         $order = wc_get_order( $order_id );
-        $redirect_url = $order->get_checkout_order_received_url();
-        $order->add_order_note( 'Recurrente: '.'Se retorna a sitio web.' );
-        wp_safe_redirect($redirect_url);
+        if($status_id == 1){
+          $redirect_url = $order->get_checkout_order_received_url();
+          $order->add_order_note( 'Recurrente: '.'Se retorna a sitio web.' );
+          wp_safe_redirect($redirect_url);
+        }else if ($status_id == 0){
+          $checkout_url = add_query_arg( [
+            'cancel' => 'true',
+          ], wc_get_checkout_url() );
+          $order->add_order_note( 'Recurrente: '.'La transacción fue cancelada.' );
+          wp_safe_redirect($checkout_url);
+        }
+      }
+
+      public function process_webhook(){
+        $jsonData = file_get_contents('php://input');
+        // Decode the JSON data into a PHP associative array
+        $data = json_decode($jsonData, true);
+        erro_log($data);
       }
 
       // Response handled for payment gateway
