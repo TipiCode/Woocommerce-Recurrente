@@ -107,8 +107,35 @@
       public function process_webhook(){
         $jsonData = file_get_contents('php://input');
         // Decode the JSON data into a PHP associative array
-        $data = json_decode($jsonData, true);
-        erro_log($data);
+        $data = json_decode($jsonData);
+        if($data->event_type == 'payment_intent.failed'){
+          $checkout_id = $data->checkout->id;
+          $fail_message = $data->failure_reason;
+
+          $args = array(
+            'meta_key'      => 'recurrente_checkout_id', 
+            'meta_value'    => $checkout_id, 
+            'return'        => 'objects' 
+          );
+
+          $orders = wc_get_orders( $args );
+          $order = $orders[0];
+          $order->add_order_note( 'Recurrente: '.$fail_message );
+          $order->update_status( 'wc-cancelled' );
+        }//Cobro fallido con tarjeta
+        else if($data->event_type == 'payment_intent.succeeded'){
+          $checkout_id = $data->checkout->id;
+          $args = array(
+            'meta_key'      => 'recurrente_checkout_id', 
+            'meta_value'    => $checkout_id, 
+            'return'        => 'objects' 
+          );
+
+          $orders = wc_get_orders( $args );
+          $order = $orders[0];
+          $order->add_order_note( 'Recurrente: '.'Se completo el pago correctamente' );
+          $order->update_status( 'wc-completed' );
+        }//Cobro exitoso con tarjeta
       }
 
       // Response handled for payment gateway
