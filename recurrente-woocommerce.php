@@ -25,7 +25,7 @@ function recurrente_init() {
   if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
   include_once ('classes/recurrente.php') ;
   // class add it too WooCommerce
-  //Recurrente::get_instance()->init_hooks();
+  Recurrente::get_instance();
 }
 
 add_filter( 'woocommerce_payment_gateways', 'add_recurrente_gateway' );
