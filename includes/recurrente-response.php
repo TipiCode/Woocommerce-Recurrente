@@ -24,6 +24,7 @@ class RecurrenteResponse
     /**
     * Ejecuta la respuesta y procesa la orden según el resultado del evento del WebHook
     * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
@@ -49,6 +50,7 @@ class RecurrenteResponse
     /**
     * Procesa el resultado fallido del intento de pago con tarjeta de crédito o débito
     * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
     * @return string HTTP Response Code de la llamada
     * @link https://codingtipi.com/project/recurrente
@@ -59,26 +61,78 @@ class RecurrenteResponse
         $fail_message = $data->failure_reason;
         $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message);
     }
+
+    /**
+    * Procesa el resultado satisfactorio del intento de pago con tarjeta de crédito o débito
+    * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */ 
     private function payment_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
         $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message);
     }
+
+    /**
+    * Procesa el el intento de pago con transferencia bancaria
+    * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */ 
     private function bank_transfer_pending($data){
         $checkout_id = $data->checkout->id;
         $hold_message = 'Se inicio un proceso de transferencia bancaria.';
         $this->process_order($checkout_id, 'wc-on-hold', 'Recurrente: '.$hold_message);
     }
+
+    /**
+    * Procesa el resultado satisfactorio del intento de pago con transferencia bancaria
+    * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */ 
     private function bank_transfer_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago por transferencia bancaria.';
         $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message);
     }
+
+    /**
+    * Procesa el resultado satisfactorio del intento de pago con transferencia bancaria
+    * 
+    * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */ 
     private function bank_transfer_failed($data){
         $checkout_id = $data->checkout->id;
         $fail_message = $data->failure_reason;;
         $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message);
     }
+
+    /**
+    * Procesa el estado de la orden dentro de WooCommerce
+    * 
+    * @param string   $checkout_id  Id del checkout de Recurrente.
+    * @param string   $status  Estado al cual se cambiara al pedido.
+    * @param string   $note  Nota que se le sera agregada al pedido.
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */
     private function process_order($checkout_id, $status, $note){
         $args = array(
             'meta_key'      => 'recurrente_checkout_id', 

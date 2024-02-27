@@ -15,7 +15,7 @@ class Single_Product {
     /**
     * Constructor
     *
-    * @param WC_Order   $customer_order  Orden de WooCommerce para procesar los datos del producto.
+    * @param WC_Order  $customer_order  Orden de WooCommerce para procesar los datos del producto.
     * 
     */ 
     function __construct($customer_order) {
@@ -43,6 +43,30 @@ class Single_Product {
             $curl->terminate();
 
             $this->id = $response['body']->prices[0]->id;
+
+            return $response['code'];
+
+        } catch (Exception $e) {
+			return new WP_Error('error', $e->getMessage());
+		}
+    }
+
+    /**
+    * Elimina un producto de la biblioteca de Recurrente
+    * 
+    * @throws Exception Si la llamada a recurrente falla
+    * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @return string HTTP Response Code de la llamada
+    * @link https://codingtipi.com/project/recurrente
+    * @since 1.2.0
+    */
+    public function delete(){
+        try{
+            $url = 'https://app.recurrente.com/api/products/'.$this->id ;
+            $curl = new Curl($this->gateway->get_option('public_key'), $this->gateway->get_option('secret_key'));// Inicializar Curl
+
+            $response = $curl->execute_delete($url);
+            $curl->terminate();
 
             return $response['code'];
 
