@@ -30,6 +30,14 @@ function recurrente_init() {
   include_once ('classes/recurrente.php') ;
 
   Recurrente::get_instance();
+
+  include_once( 'includes/plugin-update-checker/plugin-update-checker.php');
+
+  $myUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+	  'https://tipi-pod.sfo3.digitaloceanspaces.com/plugins/recurrente/details.json',
+	  __FILE__, //Full path to the main plugin file or functions.php.
+	  'woocommerce-recurrente'
+  );
 }
 add_action( 'plugins_loaded', 'recurrente_init', 0 );
 

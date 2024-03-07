@@ -52,8 +52,6 @@ class Recurrente extends WC_Payment_Gateway {
   */ 
   public static function get_instance() {
     if (!isset(self::$instance)) {
-      error_log("New Instance");
-      error_log($_SERVER['REQUEST_URI']);
       self::$instance = new self();
     }
     return self::$instance;
@@ -149,45 +147,32 @@ class Recurrente extends WC_Payment_Gateway {
   * @author Luis E. Mendoza <lmendoza@codingtipi.com>
   * @link https://codingtipi.com/project/recurrente
   * @return Array Arreglo que contiene el resultado del proceso de la transacción y el URL para redirigir
-  * @since 1.2.0
+  * @since 2.0.0
   */
   public function process_payment( $order_id ) {
     include_once dirname(__FILE__) . '/../utils/curl.php';
-    include_once 'single-product.php';
-    include_once 'client.php';
-    include_once 'checkout.php';
+    include_once 'single-checkout.php';
+
     global $woocommerce;
     $customer_order = new WC_Order( $order_id ); //Crear Orden de WooCommerce
       
-    $single_product = new Single_Product($customer_order); //Inicia un producto simpre 
-    $product_transaction = $single_product->create(); 
+    $single_checkout = new Single_Checkout($customer_order); //Inicia un checkout simpre 
+    $checkout_transaction = $single_checkout->create(); 
 
-    if ( is_wp_error( $product_transaction ) ) //Valida por error en la llamada del API
-      $this->fail();
-    if ( $product_transaction != 201 ) //Valida el return del status code 
-      $this->fail();
-      
-    $client = new Client($customer_order); //Inicia la instancia del cliente para que aparezca lleno el checkout en recurrente
-    $client_transaction = $client->create();
-    if ( is_wp_error( $client_transaction ) ) //Valida por error en la llamada del API
-      $this->fail();
-    if ( $client_transaction != 200 ) //Valida el return del status code 
-      $this->fail();
-
-    $checkout = new Checkout($single_product->id, $client->id); //Inicia la instancia del checkout para que aparezca lleno el checkout en recurrente
-    $checkout_transaction = $checkout->create();
     if ( is_wp_error( $checkout_transaction ) ) //Valida por error en la llamada del API
       $this->fail();
     if ( $checkout_transaction != 201 ) //Valida el return del status code 
       $this->fail();
 
     $customer_order->add_order_note( 'Recurrente: '.'Se inicializó el proceso de pago.' ); //Actualizar los comentarios 
-    $customer_order->update_meta_data( 'recurrente_checkout_id', $checkout->id ); //Agregar el Id del checkout en la orden.
+    $customer_order->update_meta_data( 'recurrente_checkout_id', $single_checkout->id ); //Agregar el Id del checkout en la orden.
+    $customer_order->update_meta_data( 'recurrente_checkout_url', $single_checkout->url ); //Agregar el URL del checkout en la orden.
+    $customer_order->update_meta_data( 'recurrente_product_id', $single_checkout->product ); //Agregar el Id del producto en la orden.
     $customer_order->save();
 
     return array(
       'result'   => 'success',
-      'redirect' => $checkout->url,
+      'redirect' => $single_checkout->url,
     );
   }
   

@@ -23,6 +23,8 @@ class Curl{
         $this->header  = Array(
             'X-PUBLIC-KEY:' . $public_key,
             'X-SECRET-KEY:' . $secret_key,
+            'X-ORIGIN:' . get_site_url('url'),
+            'X-STORE:'.get_bloginfo('name'),
             'Content-type: application/json'
           );
     }
@@ -66,7 +68,7 @@ class Curl{
 	    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 	    curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->header );
 
-        $response = curl_exec($ch);
+        $response = curl_exec($this->ch);
         $response_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
 
         return Array(

@@ -59,7 +59,7 @@ class RecurrenteResponse
     private function payment_failed($data){
         $checkout_id = $data->checkout->id;
         $fail_message = $data->failure_reason;
-        $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message);
+        $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message, true);
     }
 
     /**
@@ -74,7 +74,7 @@ class RecurrenteResponse
     private function payment_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
-        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message);
+        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message, true);
     }
 
     /**
@@ -89,7 +89,7 @@ class RecurrenteResponse
     private function bank_transfer_pending($data){
         $checkout_id = $data->checkout->id;
         $hold_message = 'Se inicio un proceso de transferencia bancaria.';
-        $this->process_order($checkout_id, 'wc-on-hold', 'Recurrente: '.$hold_message);
+        $this->process_order($checkout_id, 'wc-on-hold', 'Recurrente: '.$hold_message, false);
     }
 
     /**
@@ -104,7 +104,7 @@ class RecurrenteResponse
     private function bank_transfer_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago por transferencia bancaria.';
-        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message);
+        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message, true);
     }
 
     /**
@@ -119,7 +119,7 @@ class RecurrenteResponse
     private function bank_transfer_failed($data){
         $checkout_id = $data->checkout->id;
         $fail_message = $data->failure_reason;;
-        $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message);
+        $this->process_order($checkout_id, 'wc-cancelled', 'Recurrente: '.$fail_message, true);
     }
 
     /**
@@ -128,12 +128,13 @@ class RecurrenteResponse
     * @param string   $checkout_id  Id del checkout de Recurrente.
     * @param string   $status  Estado al cual se cambiara al pedido.
     * @param string   $note  Nota que se le sera agregada al pedido.
+    * @param string   $cleanup  Si se desea remover el producto de recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
     * @return string HTTP Response Code de la llamada
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
     */
-    private function process_order($checkout_id, $status, $note){
+    private function process_order($checkout_id, $status, $note, $cleanup){
         $args = array(
             'meta_key'      => 'recurrente_checkout_id', 
             'meta_value'    => $checkout_id, 
@@ -143,5 +144,14 @@ class RecurrenteResponse
         $order = $orders[0];
         $order->add_order_note( $note );
         $order->update_status( $status );
+
+        if($cleanup == true){
+            include_once dirname(__FILE__) . '/../utils/curl.php';
+            include_once dirname(__FILE__) . '/../classes/single-checkout.php';
+            $clean_product = $order->get_meta('recurrente_product_id');
+            $single_checkout = new Single_Checkout($order);
+            $single_checkout->id = $clean_product;
+            $single_checkout->clean();
+        }
     }
 }
