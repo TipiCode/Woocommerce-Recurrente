@@ -31,15 +31,17 @@ Este plugin es parte de un esfuerzo conjunto para desarrollar implementaciones p
 El proyecto es hecho para funcionar con Wordpress y WooCommerce, siendo una de la plataforma de comercio electrónico más grande por el momento. Tenemos planes de enfocar nuestros esfuerzos para probar la compatibilidad con versiones mayores de ambas plataformas, si deseas agregar la compatibilidad para una versión no soportada ¡Enhorabuena! Estamos aquí para apoya cualquier actualización que desees realizar.
 
 Soporte para Versiones de Wordpress:
-- 6.1.1
+- 6.4.3
 
 Soporte para Versiones de Woocommerce:
-- 7.5.0
+- 8.6.1
 
 Soporte para Versiones de Php:
+- 8.3
+- 8.2
 - 8.1
 - 8.0
-- 7.1
+- 7.4
 
 ![Maintnence](https://tipi-pod.sfo3.cdn.digitaloceanspaces.com/github%2Fplugin-maintnence.jpg)
 
@@ -61,7 +63,7 @@ Tambien puedes simplemente clona el repositorio, genera un archivo .Zip y súbel
 Recuerda que [Woocommerce](https://woocommerce.com/) debe de estar instalado en el sitio para poder habilitar el plugin.
 
 ### ⚙️ Configuración
-Una vez instalado debes dirigirte a la opción de Recurrente que te aparecerá en el menú de WordPress, desde acá podrás activar o desactivar el plugin, así como configurar tus llaves del API con tan solo unos clics. 
+Para configurar correctamente el plugin encontraras una guía de configuración en el siguiente [enlace](https://blog.codingtipi.com/como-aceptar-pagos-con-tarjeta-desde-woocommerce-con-recurrente/).
 
 ### 🔑 Obtención de llaves para Test y Live
 Para obtener tus llaves de prueba y producción deber ir a [Recurrente](https://recurrente.com/), allí podrás crear tu cuenta y encontrarás instrucciones dentro de su documentación. Dentro del plugin puedes colocar ambas llaves ya sea modo Test o Live en las opciones de <strong>Access Key</strong> y <strong>Secret Key</strong> respectivamente.
