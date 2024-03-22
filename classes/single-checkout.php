@@ -5,7 +5,7 @@
 * Objeto principal para interactuar con un checkout de Cobro único dentro de recurrente.
 *
 * @copyright  2024 - tipi(code)
-* @since      2.0.0
+* @since      2.0.1
 */ 
 class Single_Checkout {
     private $gateway;
@@ -13,6 +13,7 @@ class Single_Checkout {
     public $id;
     public $url;
     public $product;
+    public $code;
 
     /**
     * Constructor
@@ -47,13 +48,14 @@ class Single_Checkout {
             $response = $curl->execute_post($url, $checkout);
             $curl->terminate();
 
-            error_log( print_r( $response, true ) );
-
-            $this->id = $response['body']->id;
-            $this->product = $response['body']->product;
-            $this->url = $response['body']->url;
-
-            return $response['code'];
+            $this->code = $response['code'];
+            if($this->code == 201){
+                $this->id = $response['body']->id;
+                $this->product = $response['body']->product;
+                $this->url = $response['body']->url;
+            }else{
+                return $response['body']->message;
+            }
 
         } catch (Exception $e) {
 			return new WP_Error('error', $e->getMessage());
@@ -90,20 +92,20 @@ class Single_Checkout {
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
     * @return Array Objeto para usar con el API de Recurrente
     * @link https://codingtipi.com/project/recurrente
-    * @since 2.0.0
+    * @since 2.0.1
     */ 
     private function get_api_model(){
         return Array(
                 "number"  => $this->customer_order->get_order_number(),
                 "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
-                "correlative"  => $this->customer_order->id,
-                "amount" => $this->customer_order->order_total,
+                "correlative"  => $this->customer_order->get_id(),
+                "amount" => $this->customer_order->get_total(),
                 "currency"  => $this->customer_order->get_currency(),
                 "billing" => Array(
-                    "name" => $this->customer_order->billing_first_name,
-                    "surname" => $this->customer_order->billing_last_name,
-                    "email" => $this->customer_order->billing_email,
-                    "phone" => $this->customer_order->billing_phone
+                    "name" => $this->customer_order->get_billing_first_name(),
+                    "surname" => $this->customer_order->get_billing_last_name(),
+                    "email" => $this->customer_order->get_billing_email(),
+                    "phone" => $this->customer_order->get_billing_phone()
                 )
         );
     }

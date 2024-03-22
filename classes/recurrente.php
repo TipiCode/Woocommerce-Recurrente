@@ -160,9 +160,9 @@ class Recurrente extends WC_Payment_Gateway {
     $checkout_transaction = $single_checkout->create(); 
 
     if ( is_wp_error( $checkout_transaction ) ) //Valida por error en la llamada del API
-      $this->fail();
-    if ( $checkout_transaction != 201 ) //Valida el return del status code 
-      $this->fail();
+      $this->fail($checkout_transaction);
+    if ( $single_checkout->code != 201 ) //Valida el return del status code 
+      $this->fail($checkout_transaction);
 
     $customer_order->add_order_note( 'Recurrente: '.'Se inicializó el proceso de pago.' ); //Actualizar los comentarios 
     $customer_order->update_meta_data( 'recurrente_checkout_id', $single_checkout->id ); //Agregar el Id del checkout en la orden.
@@ -194,8 +194,8 @@ class Recurrente extends WC_Payment_Gateway {
   * @link https://codingtipi.com/project/recurrente
   * @since 1.2.0
   */
-  public function fail(){
-    throw new Exception( __( 'Lo sentimos, ocurrio un error comunicandose con la pasarela de pago, disculpa el inconveniente.', 'recurrente' ) );
+  public function fail($message){
+    throw new Exception( __( $message, 'recurrente' ) );
   }
 
   /**

@@ -3,13 +3,13 @@
 * Plugin Name: Recurrente - WooCommerce
 * Plugin URI: https://github.com/TipiCode/Woocommerce-Recurrente
 * Description: Plugin para Woocommerce que habilita la pasarela de pago Recurrente como método de pago en el checkout de tú sitio web.
-* Version:     2.0.0
+* Version:     2.0.1
 * Requires PHP: 7.4
 * Author:      tipi(code)
 * Author URI: https://codingtipi.com
 * License:     MIT
 * WC requires at least: 7.4.0
-* WC tested up to: 8.6.1
+* WC tested up to: 8.7.0
 *
 * @package WoocommerceRecurrente
 */
