@@ -3,7 +3,7 @@
 * Plugin Name: Recurrente - WooCommerce
 * Plugin URI: https://github.com/TipiCode/Woocommerce-Recurrente
 * Description: Plugin para Woocommerce que habilita la pasarela de pago Recurrente como método de pago en el checkout de tú sitio web.
-* Version:     2.0.1
+* Version:     2.1.1
 * Requires PHP: 7.4
 * Author:      tipi(code)
 * Author URI: https://codingtipi.com
@@ -153,3 +153,77 @@ function woo_change_order_received_text( $str, $order ) {
   return sprintf( "Gracias, %s!", esc_html( $customer_order->get_billing_first_name() ) );
 }
 add_filter('woocommerce_thankyou_order_received_text', 'woo_change_order_received_text', 10, 2 );
+
+/**
+* Agrega el tipo de producto recurrente al dropdown de productos
+* 
+* @author Luis E. Mendoza <lmendoza@codingtipi.com>
+* @link https://codingtipi.com/project/recurrente
+* @since 2.1.0
+*/
+function recurrente_add_custom_product_type( $types ){
+  $types[ 'recurrente' ] = 'Producto Recurrente';
+  return $types;
+}
+add_filter( 'product_type_selector', 'recurrente_add_custom_product_type' );
+
+/**
+* Agrega la clase del nuevo tipo de producto recurrente
+* 
+* @author Luis E. Mendoza <lmendoza@codingtipi.com>
+* @link https://codingtipi.com/project/recurrente
+* @since 2.1.0
+*/
+function recurrente_woocommerce_product_class( $classname, $product_type ) {
+  if ( $product_type == 'recurrente' ) {
+    $classname = 'recurrente_product';
+  }
+  return $classname;
+}
+add_filter( 'woocommerce_product_class', 'recurrente_woocommerce_product_class', 10, 2 );
+
+/**
+* Muestra el Tab de Precio al ser un producto no simple
+* 
+* @author Luis E. Mendoza <lmendoza@codingtipi.com>
+* @link https://codingtipi.com/project/recurrente
+* @since 2.1.0
+*/
+function recurrente_product_type_show_price() {
+  global $product_object;
+  error_log("Precio", 0);
+  error_log($product_object->get_type() , 0);
+  if ( $product_object && 'recurrente' === $product_object->get_type() ) {
+    wc_enqueue_js( "
+      $('.product_data_tabs .general_tab').addClass('show_if_recurrente').show();
+      $('.pricing').addClass('show_if_recurrente').show();
+    ");
+  }
+}
+add_action( 'woocommerce_product_options_general_product_data', 'recurrente_product_type_show_price' );
+
+/**
+* Agrega los valores del tab de productos recurrentes
+* 
+* @author Luis E. Mendoza <lmendoza@codingtipi.com>
+* @link https://codingtipi.com/project/recurrente
+* @since 2.1.0
+*/
+function recurrente_product_tab_product_tab_content() {
+ ?><div id='recurrente_product_options' class='panel woocommerce_options_panel'><?php
+ ?><div class='options_group'><?php
+                
+    woocommerce_wp_text_input(
+    array(
+      'id' => 'recurrente_price',
+      'label' => __( 'Precio', 'recurrente_product' ),
+      'placeholder' => '',
+      'desc_tip' => 'true',
+      'description' => __( 'Ingrese el precio de la susbcripción.', 'recurrente_product' ),
+      'type' => 'number'
+    )
+    );
+ ?></div>
+ </div><?php
+}
+add_action( 'woocommerce_product_data_panels', 'recurrente_product_tab_product_tab_content' );

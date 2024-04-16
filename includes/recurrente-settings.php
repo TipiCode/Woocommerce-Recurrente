@@ -15,6 +15,7 @@ class RecurrenteSettings
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
     * @return Array  Arreglo de campos para la vista de configuración
     * @since 1.2.0
+    * Actualizado en la 2.1.1
     */ 
     public static function get_settings(){
         return array(
@@ -45,6 +46,24 @@ class RecurrenteSettings
               'title'    => __( 'Clave Secreta', 'recurrente' ),
               'type'    => 'text',
               'desc_tip'  => __( 'Esta llave la puedes encontrar en el portal de recurrente en el área de Desarrolladores y API.', 'recurrente' ),
+            ),
+            'allow_transfer' => array(
+              'title'    => __( 'Habilitar Transferencia Bancaria', 'recurrente' ),
+              'label'    => __( 'Activa la opción de pago por transferencia bancaria.', 'recurrente' ),
+              'type'    => 'checkbox',
+              'default'  => 'no',
+              'desc_tip'  => __( 'Esta opción muestra transferencia bancaria como las posibles opciones de pago.', 'recurrente' ),
+            ),
+            'installments' => array(
+              'title'    => __( 'Habilitar Cuotas', 'recurrente' ),
+              'type'    => 'multiselect',
+              'options'     => array( // Array of options for select/multiselect inputs only.
+                '3 Meses' => '3',
+                '6 Meses' => '6',
+                '12 Meses' => '12',
+                '18 Meses' => '18'
+              ),
+              'desc_tip'  => __( 'Preciona la opción + CTRL para poder seleccionar varias.', 'recurrente' ),
             )
         );    
     }
