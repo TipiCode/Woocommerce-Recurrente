@@ -95,12 +95,17 @@ class Single_Checkout {
     * @since 2.0.1
     */ 
     private function get_api_model(){
+        $installments = !empty( $this->gateway->get_option('installments')) ? str_replace(' Meses', '', join(',', $this->gateway->get_option('installments'))) : '';
+        $transfers = $this->gateway->get_option('allow_transfer') == 'yes' ? true : false;
+
         return Array(
                 "number"  => $this->customer_order->get_order_number(),
                 "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
                 "correlative"  => $this->customer_order->get_id(),
                 "amount" => $this->customer_order->get_total(),
                 "currency"  => $this->customer_order->get_currency(),
+                "allowTransfer"  => $transfers,
+                "installments"  => $installments,
                 "billing" => Array(
                     "name" => $this->customer_order->get_billing_first_name(),
                     "surname" => $this->customer_order->get_billing_last_name(),
