@@ -13,6 +13,7 @@ class RecurrenteSettings
     * Obtiene el arreglo de configuraciones
     * 
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @return Array  Arreglo de campos para la vista de configuración
     * @since 1.2.0
     * Actualizado en la 2.1.1
@@ -64,7 +65,18 @@ class RecurrenteSettings
                 '18 Meses' => '18'
               ),
               'desc_tip'  => __( 'Preciona la opción + CTRL para poder seleccionar varias.', 'recurrente' ),
-            )
+            ),
+            'order_status' => array(
+                'title'       => __( 'Estado Predeterminado de la orden', 'my-text-domain' ),
+                'type'        => 'select',
+                'description' => __( 'Selecciona el estado predeterminado para las órdenes procesadas.', 'my-text-domain' ),
+                'options'     => array(
+                    'wc-completed'  => __( 'Completada', 'my-text-domain' ),
+                    'wc-on-hold'    => __( 'En espera', 'my-text-domain' ),
+                    'wc-cancelled'  => __( 'Cancelada', 'my-text-domain' ),
+                ),
+                'default'     => 'wc-completed',
+            ),
         );    
     }
 }

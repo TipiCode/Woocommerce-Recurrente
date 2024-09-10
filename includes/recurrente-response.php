@@ -10,6 +10,7 @@
 class RecurrenteResponse 
 {
     public $intent;
+    public $settings;
 
     /**
     * Constructor
@@ -19,6 +20,7 @@ class RecurrenteResponse
     */ 
     function __construct($intent) {
         $this->intent = $intent;
+        $this->settings = get_option( 'recurrente_settings', [] );
     }
 
     /**
@@ -67,6 +69,7 @@ class RecurrenteResponse
     * 
     * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @return string HTTP Response Code de la llamada
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
@@ -74,7 +77,10 @@ class RecurrenteResponse
     private function payment_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
-        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message, true);
+
+        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed';
+
+        $this->process_order($checkout_id, $order_status, 'Recurrente: '.$success_message, true);
     }
 
     /**

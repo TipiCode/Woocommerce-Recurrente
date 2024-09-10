@@ -12,6 +12,7 @@ class Recurrente extends WC_Payment_Gateway {
   public $secret_key;
   public $allow_transfer;
   public $installments;
+  public $order_status;
   private static $instance;
 
   /**
