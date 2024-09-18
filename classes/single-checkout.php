@@ -90,6 +90,7 @@ class Single_Checkout {
     * Obtiene el modelo de un checkout para poder interactual con el API de recurrente
     * 
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @return Array Objeto para usar con el API de Recurrente
     * @link https://codingtipi.com/project/recurrente
     * @since 2.0.1
@@ -99,7 +100,7 @@ class Single_Checkout {
         $transfers = $this->gateway->get_option('allow_transfer') == 'yes' ? true : false;
 
         return Array(
-                "number"  => $this->customer_order->get_order_number(),
+                "number"  => $this->customer_order->get_id(), // ex get_order_number()
                 "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
                 "correlative"  => $this->customer_order->get_id(),
                 "amount" => $this->customer_order->get_total(),
