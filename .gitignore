@@ -1,0 +1,15 @@
+# Archivos de documentación
+documentacion-*.txt
+documentación-*.txt
+
+# Archivo de requerimientos
+requerimientos-*.txt
+
+# Archivo de migración
+*migracion*.txt
+
+# Otros archivos comunes a ignorar
+.DS_Store
+.idea/
+.vscode/
+*.log

@@ -12,6 +12,7 @@ class Recurrente extends WC_Payment_Gateway {
   public $secret_key;
   public $allow_transfer;
   public $installments;
+  public $order_status;
   private static $instance;
 
   /**
@@ -147,35 +148,74 @@ class Recurrente extends WC_Payment_Gateway {
   * Función encargada de procesar el pago de WooCommerce
   * 
   * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+  * @author Franco A. Cabrera <francocabreradev@gmail.com>
   * @link https://codingtipi.com/project/recurrente
   * @return Array Arreglo que contiene el resultado del proceso de la transacción y el URL para redirigir
   * @since 2.0.0
   */
-  public function process_payment( $order_id ) {
-    include_once dirname(__FILE__) . '/../utils/curl.php';
-    include_once 'single-checkout.php';
-
-    global $woocommerce;
-    $customer_order = new WC_Order( $order_id ); //Crear Orden de WooCommerce
+  public function process_payment($order_id){
+    error_log('Recurrente Debug: Iniciando process_payment para orden: ' . $order_id);
+    try {
+      $order = wc_get_order($order_id);
+      $token = get_option('recurrente_api_token');
       
-    $single_checkout = new Single_Checkout($customer_order); //Inicia un checkout simpre 
-    $checkout_transaction = $single_checkout->create(); 
+      if (empty($token)) {
+        error_log('Recurrente Debug: Token no encontrado, intentando obtener uno nuevo');
+        $settings = get_option('recurrente_settings');
+        if (!empty($settings['public_key']) && !empty($settings['secret_key'])) {
+          $result = RecurrenteSettings::obtener_y_almacenar_token($settings['public_key'], $settings['secret_key']);
+          if (is_wp_error($result)) {
+            error_log('Recurrente Debug: Error al obtener token - ' . $result->get_error_message());
+            return $result;
+          }
+          $token = get_option('recurrente_api_token');
+        } else {
+          error_log('Recurrente Debug: Error - No se encontraron las credenciales de API');
+          return new WP_Error('no_credentials', 'No se encontraron las credenciales de API. Por favor, verifica la configuración del plugin.');
+        }
+      }
 
-    if ( is_wp_error( $checkout_transaction ) ) //Valida por error en la llamada del API
-      $this->fail($checkout_transaction);
-    if ( $single_checkout->code != 201 ) //Valida el return del status code 
-      $this->fail($checkout_transaction);
+      // Verificar si la orden contiene productos recurrentes
+      $has_recurrente_product = false;
+      foreach ($order->get_items() as $item) {
+        $product = $item->get_product();
+        if ($product && $product->get_type() === 'recurrente') {
+          $has_recurrente_product = true;
+          error_log('Recurrente Debug: Producto recurrente encontrado en la orden: ' . $product->get_name());
+          break;
+        }
+      }
 
-    $customer_order->add_order_note( 'Recurrente: '.'Se inicializó el proceso de pago.' ); //Actualizar los comentarios 
-    $customer_order->update_meta_data( 'recurrente_checkout_id', $single_checkout->id ); //Agregar el Id del checkout en la orden.
-    $customer_order->update_meta_data( 'recurrente_checkout_url', $single_checkout->url ); //Agregar el URL del checkout en la orden.
-    $customer_order->update_meta_data( 'recurrente_product_id', $single_checkout->product ); //Agregar el Id del producto en la orden.
-    $customer_order->save();
+      if ($has_recurrente_product) {
+        error_log('Recurrente Debug: Usando Subscription_Checkout para orden recurrente');
+        $subscription_checkout = new Subscription_Checkout($order);
+        $result = $subscription_checkout->create();
+      } else {
+        error_log('Recurrente Debug: Usando Single_Checkout para orden normal');
+        $single_checkout = new Single_Checkout($order);
+        $result = $single_checkout->create();
+      }
+      
+      if (is_wp_error($result)) {
+        error_log('Recurrente Debug: Error en process_payment - ' . $result->get_error_message());
+        return $result;
+      }
 
-    return array(
-      'result'   => 'success',
-      'redirect' => $single_checkout->url,
-    );
+      if ($result === true) {
+        $checkout = $has_recurrente_product ? $subscription_checkout : $single_checkout;
+        error_log('Recurrente Debug: Checkout creado exitosamente, redirigiendo a: ' . $checkout->url);
+        return array(
+          'result' => 'success',
+          'redirect' => $checkout->url
+        );
+      } else {
+        error_log('Recurrente Debug: Error en checkout - ' . $result);
+        return new WP_Error('checkout_error', $result);
+      }
+    } catch (Exception $e) {
+      error_log('Recurrente Debug: Excepción en process_payment - ' . $e->getMessage());
+      return new WP_Error('exception', $e->getMessage());
+    }
   }
   
   /**
@@ -197,7 +237,10 @@ class Recurrente extends WC_Payment_Gateway {
   * @since 1.2.0
   */
   public function fail($message){
-    throw new Exception( __( $message, 'recurrente' ) );
+    if (is_wp_error($message)) {
+      throw new Exception($message->get_error_message());
+    }
+    throw new Exception($message);
   }
 
   /**

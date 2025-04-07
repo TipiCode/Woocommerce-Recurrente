@@ -10,6 +10,7 @@
 class RecurrenteResponse 
 {
     public $intent;
+    public $settings;
 
     /**
     * Constructor
@@ -19,6 +20,22 @@ class RecurrenteResponse
     */ 
     function __construct($intent) {
         $this->intent = $intent;
+        $this->settings = get_option( 'recurrente_settings', [] );
+    }
+
+    /**
+    * Verifica y obtiene el token si no existe
+    * 
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
+    * @since 2.1.0
+    */
+    private function verificar_y_obtener_token() {
+        $token = get_option('recurrente_api_token');
+        if (!$token) {
+            $public_key = $this->settings['public_key'] ?? '';
+            $secret_key = $this->settings['secret_key'] ?? '';
+            RecurrenteSettings::obtener_y_almacenar_token($public_key, $secret_key);
+        }
     }
 
     /**
@@ -26,10 +43,12 @@ class RecurrenteResponse
     * 
     * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
     */ 
     public function execute($data){
+        $this->verificar_y_obtener_token();
         if($this->intent === 'payment_intent.failed'){
             $this->payment_failed($data);
         }//Fallo el pago con tarjeta de crédito / debito
@@ -67,6 +86,7 @@ class RecurrenteResponse
     * 
     * @param Object   $data  Objeto que contiene la respuesta del webhook de Recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @return string HTTP Response Code de la llamada
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
@@ -74,7 +94,10 @@ class RecurrenteResponse
     private function payment_succeeded($data){
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
-        $this->process_order($checkout_id, 'wc-completed', 'Recurrente: '.$success_message, true);
+
+        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed';
+
+        $this->process_order($checkout_id, $order_status, 'Recurrente: '.$success_message, true);
     }
 
     /**
@@ -130,6 +153,7 @@ class RecurrenteResponse
     * @param string   $note  Nota que se le sera agregada al pedido.
     * @param string   $cleanup  Si se desea remover el producto de recurrente.
     * @author Luis E. Mendoza <lmendoza@codingtipi.com>
+    * @author Franco A. Cabrera <francocabreradev@gmail.com>
     * @return string HTTP Response Code de la llamada
     * @link https://codingtipi.com/project/recurrente
     * @since 1.2.0
@@ -146,12 +170,24 @@ class RecurrenteResponse
         $order->update_status( $status );
 
         if($cleanup == true){
-            include_once dirname(__FILE__) . '/../utils/curl.php';
-            include_once dirname(__FILE__) . '/../classes/single-checkout.php';
-            $clean_product = $order->get_meta('recurrente_product_id');
-            $single_checkout = new Single_Checkout($order);
-            $single_checkout->id = $clean_product;
-            $single_checkout->clean();
+            // Verificar si es una suscripción o un pago normal
+            $is_subscription = $order->get_meta('recurrente_is_subscription') === 'yes';
+            
+            if($is_subscription) {
+                // Procesar limpieza para suscripción
+                include_once dirname(__FILE__) . '/../classes/subscription-checkout.php';
+                $clean_product = $order->get_meta('recurrente_product_id');
+                $subscription_checkout = new Subscription_Checkout($order);
+                $subscription_checkout->product_id = $clean_product;
+                $subscription_checkout->clean();
+            } else {
+                // Procesar limpieza para pago normal
+                include_once dirname(__FILE__) . '/../classes/single-checkout.php';
+                $clean_product = $order->get_meta('recurrente_product_id');
+                $single_checkout = new Single_Checkout($order);
+                $single_checkout->id = $clean_product;
+                $single_checkout->clean();
+            }
         }
     }
 }

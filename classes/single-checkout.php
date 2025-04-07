@@ -10,6 +10,7 @@
 class Single_Checkout {
     private $gateway;
     private $customer_order;
+    private $curl;
     public $id;
     public $url;
     public $product;
@@ -24,6 +25,18 @@ class Single_Checkout {
     function __construct($customer_order) {
         $this->gateway = Recurrente::get_instance();
         $this->customer_order = $customer_order;
+        $this->curl = null;
+    }
+
+    /**
+    * Obtiene una instancia de Curl
+    */
+    private function get_curl() {
+        if ($this->curl === null) {
+            $token = get_option('recurrente_api_token');
+            $this->curl = new Curl($token);
+        }
+        return $this->curl;
     }
 
     /**
@@ -36,30 +49,23 @@ class Single_Checkout {
     * @since 2.0.0
     */
     public function create(){
-        try{
-            $url = 'https://aurora.codingtipi.com/pay/v1/recurrente/checkouts';
-            $curl = new Curl(
-                $this->gateway->get_option('public_key'), 
-                $this->gateway->get_option('secret_key')
-            );// Inicializar Curl
-
-            $checkout = $this->get_api_model();//Obtiene objeto en formato JSON como lo requiere Recurrente
-            
+        try {
+            $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/single';
+            $curl = $this->get_curl();
+            $checkout = $this->get_api_model();
             $response = $curl->execute_post($url, $checkout);
-            $curl->terminate();
-
+            
             $this->code = $response['code'];
             if($this->code == 201){
                 $this->id = $response['body']->id;
-                $this->product = $response['body']->product;
                 $this->url = $response['body']->url;
-            }else{
+                return true;
+            } else {
                 return $response['body']->message;
             }
-
         } catch (Exception $e) {
-			return new WP_Error('error', $e->getMessage());
-		}
+            return new WP_Error('error', $e->getMessage());
+        }
     }
 
     /**
@@ -72,18 +78,14 @@ class Single_Checkout {
     * @since 2.0.0
     */
     public function clean(){
-        try{
-            $url = 'https://aurora.codingtipi.com/pay/v1/recurrente/products/'.$this->id ;
-            $curl = new Curl($this->gateway->get_option('public_key'), $this->gateway->get_option('secret_key'));// Inicializar Curl
-
+        try {
+            $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/products/'.$this->id;
+            $curl = $this->get_curl();
             $response = $curl->execute_delete($url);
-            $curl->terminate();
-
             return $response['code'];
-
         } catch (Exception $e) {
-			return new WP_Error('error', $e->getMessage());
-		}
+            return new WP_Error('error', $e->getMessage());
+        }
     }
 
     /**

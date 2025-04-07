@@ -10,23 +10,26 @@
 class Curl{
     private $ch;
     private $header;
+    private $token;
+    private $debug_enabled;
 
     /**
     * Constructor
     *
-    * @param string $public_key  Clave pública que provee Recurrente.
-    * @param string $secret_key Clave secreta que provee Recurrente.
+    * @param string $token  Token de autenticación que provee Recurrente.
     * 
     */
-    function __construct($public_key, $secret_key) {
+    function __construct($token) {
         $this->ch = curl_init();
         $this->header  = Array(
-            'X-PUBLIC-KEY:' . $public_key,
-            'X-SECRET-KEY:' . $secret_key,
+            'X-TOKEN:' . $token,
             'X-ORIGIN:' . get_site_url('url'),
             'X-STORE:'.get_bloginfo('name'),
             'Content-type: application/json'
           );
+        $this->token = $token;
+        $this->debug_enabled = defined('WP_DEBUG') && WP_DEBUG;
+        error_log('Recurrente Debug: Inicializando Curl con token: ' . substr($token, 0, 10) . '...');
     }
 
     /**
@@ -40,17 +43,37 @@ class Curl{
     * @since 1.2.0
     */
     function execute_post($url, $body){
-        curl_setopt($this->ch, CURLOPT_URL, $url);
-	    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->header );
-	    curl_setopt($this->ch, CURLOPT_POSTFIELDS, json_encode($body));
-	    $response = json_decode(curl_exec($this->ch));
-	    $response_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+        if ($this->debug_enabled) {
+            error_log('Recurrente Debug: Ejecutando POST a: ' . $url);
+            error_log('Recurrente Debug: Datos enviados: ' . json_encode($body));
+        }
 
-        return Array(
-            "code" => $response_code,
-            "body" => $response
-        );
+        try {
+            
+            curl_setopt($this->ch, CURLOPT_URL, $url);
+            curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->header );
+            curl_setopt($this->ch, CURLOPT_POSTFIELDS, json_encode($body));
+            $response = curl_exec($this->ch);
+            $response_code = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($this->ch)){
+                $error = curl_error($this->ch);
+                throw new Exception($error);
+            }
+            
+            if ($this->debug_enabled) {
+                error_log('Recurrente Debug: Código de respuesta: ' . $response_code);
+                error_log('Recurrente Debug: Cuerpo de la respuesta: ' . json_encode($response));
+            }
+            
+            return Array(
+                "code" => $response_code,
+                "body" => json_decode($response)
+            );
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     /**

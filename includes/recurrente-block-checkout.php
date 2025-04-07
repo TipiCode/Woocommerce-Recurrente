@@ -1,5 +1,4 @@
 <?php
-use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 /**
 * Clase que habilita el soporte para el constructor de bloques de Wordpress
 *
@@ -9,7 +8,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 * @copyright  2024 - tipi(code)
 * @since      1.2.0
 */ 
-final class WC_Recurrente_Blocks extends AbstractPaymentMethodType {
+final class WC_Recurrente_Blocks extends \Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType {
 
     private $gateway;
     protected $name = 'recurrente';// your payment gateway name
