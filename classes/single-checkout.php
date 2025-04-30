@@ -50,8 +50,8 @@ class Single_Checkout {
     */
     public function create(){
         try {
-            // $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/single';
-            $url = 'http://localhost:8080/api/checkouts/';
+            $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/single';
+            //$url = 'http://localhost:8080/api/checkouts/';
             $curl = $this->get_curl();
             $checkout = $this->get_api_model();
             $response = $curl->execute_post($url, $checkout);

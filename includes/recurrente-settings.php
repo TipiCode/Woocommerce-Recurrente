@@ -70,7 +70,7 @@ class RecurrenteSettings
                 'title'       => __( 'Estado Predeterminado de la orden', 'my-text-domain' ),
                 'type'        => 'select',
                 'description' => __( 'Selecciona el estado predeterminado para las órdenes procesadas.', 'my-text-domain' ),
-                'options'     => array(
+                'options'     => array( //TODO Llenar esta lista con $order_statuses = wc_get_order_statuses(); y filtrar el array para omitir wc-cancelled, wc-refunded, wc-failed
                     'wc-completed'  => __( 'Completada', 'my-text-domain' ),
                     'wc-on-hold'    => __( 'En espera', 'my-text-domain' ),
                     'wc-cancelled'  => __( 'Cancelada', 'my-text-domain' ),
@@ -92,8 +92,8 @@ class RecurrenteSettings
             return new WP_Error('invalid_credentials', 'Las credenciales de Recurrente son inválidas');
         }
 
-        //$url = 'https://aurora.codingtipi.com/pay/v2/recurrente/setup';
-        $url = 'http://localhost:8080/api/auth/token';
+        $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/setup';
+        // $url = 'http://localhost:8080/api/auth/token';
         $data = array(
             'publicKey' => $public_key,
             'secretKey' => $secret_key
@@ -101,8 +101,8 @@ class RecurrenteSettings
 
         error_log('Recurrente Debug: Enviando petición a: ' . $url);
         error_log('Recurrente Debug: Datos enviados: ' . json_encode(array(
-            'publicKey' => substr($public_key, 0, 5) . '...',
-            'secretKey' => substr($secret_key, 0, 5) . '...'
+            'publicKey' => $public_key ,
+            'secretKey' => $secret_key
         )));
 
         error_log('Recurrente Debug: Configurando petición HTTP...');

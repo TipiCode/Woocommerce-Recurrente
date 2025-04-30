@@ -95,7 +95,7 @@ class RecurrenteResponse
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
 
-        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed';
+        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed'; //TODO - Revisar esta linea, hay bugs reportados que dicen que aunque tenga otro status guardado siempre le da completed
 
         $this->process_order($checkout_id, $order_status, 'Recurrente: '.$success_message, true);
     }

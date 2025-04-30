@@ -3,7 +3,7 @@
 * Plugin Name: Recurrente - WooCommerce
 * Plugin URI: https://github.com/TipiCode/Woocommerce-Recurrente
 * Description: Plugin para Woocommerce que habilita la pasarela de pago Recurrente como método de pago en el checkout de tú sitio web.
-* Version:     2.1.0
+* Version:     2.1.1
 * Requires PHP: 7.4
 * Author:      tipi(code)
 * Author URI: https://codingtipi.com
@@ -520,3 +520,5 @@ function recurrente_cart_price_format($price_html, $cart_item, $cart_item_key) {
 add_filter('woocommerce_cart_item_price', 'recurrente_cart_price_format', 10, 3);
 add_filter('woocommerce_cart_item_subtotal', 'recurrente_cart_price_format', 10, 3);
 add_filter('woocommerce_order_formatted_line_subtotal', 'recurrente_cart_price_format', 10, 3);
+
+//TODO si se agregar un producto recurrente borrar el carrito si hay items y yo agrego un item recurrente llamar WC()->cart->empty_cart();
