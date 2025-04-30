@@ -154,21 +154,44 @@ class Recurrente extends WC_Payment_Gateway {
   * @since 2.0.0
   */
   public function process_payment($order_id){
-    error_log('Recurrente Debug: Iniciando process_payment para orden: ' . $order_id);
+    error_log('Recurrente Debug: ===== INICIO DE PROCESS_PAYMENT =====');
+    error_log('Recurrente Debug: Orden ID: ' . $order_id);
     try {
       $order = wc_get_order($order_id);
+      error_log('Recurrente Debug: Orden obtenida - ID: ' . $order->get_id());
+      
+      // Verificar todas las opciones de configuración disponibles
+      $all_settings = get_option('woocommerce_recurrente_settings');
+      error_log('Recurrente Debug: Configuración de WooCommerce: ' . json_encode($all_settings));
+      
+      $recurrente_settings = get_option('recurrente_settings');
+      error_log('Recurrente Debug: Configuración de Recurrente: ' . json_encode($recurrente_settings));
+      
       $token = get_option('recurrente_api_token');
+      error_log('Recurrente Debug: Token actual: ' . (!empty($token) ? substr($token, 0, 10) . '...' : 'no encontrado'));
       
       if (empty($token)) {
         error_log('Recurrente Debug: Token no encontrado, intentando obtener uno nuevo');
+        // Intentar obtener las credenciales de diferentes fuentes
         $settings = get_option('recurrente_settings');
+        if (empty($settings)) {
+          $settings = get_option('woocommerce_recurrente_settings');
+        }
+        
+        error_log('Recurrente Debug: Configuración cargada: ' . json_encode(array(
+          'public_key' => !empty($settings['public_key']) ? substr($settings['public_key'], 0, 5) . '...' : 'no encontrada',
+          'secret_key' => !empty($settings['secret_key']) ? substr($settings['secret_key'], 0, 5) . '...' : 'no encontrada'
+        )));
+        
         if (!empty($settings['public_key']) && !empty($settings['secret_key'])) {
+          error_log('Recurrente Debug: Credenciales encontradas, intentando obtener token');
           $result = RecurrenteSettings::obtener_y_almacenar_token($settings['public_key'], $settings['secret_key']);
           if (is_wp_error($result)) {
             error_log('Recurrente Debug: Error al obtener token - ' . $result->get_error_message());
             return $result;
           }
           $token = get_option('recurrente_api_token');
+          error_log('Recurrente Debug: Nuevo token obtenido: ' . substr($token, 0, 10) . '...');
         } else {
           error_log('Recurrente Debug: Error - No se encontraron las credenciales de API');
           return new WP_Error('no_credentials', 'No se encontraron las credenciales de API. Por favor, verifica la configuración del plugin.');
@@ -179,6 +202,7 @@ class Recurrente extends WC_Payment_Gateway {
       $has_recurrente_product = false;
       foreach ($order->get_items() as $item) {
         $product = $item->get_product();
+        error_log('Recurrente Debug: Producto encontrado - ID: ' . $product->get_id() . ', Tipo: ' . $product->get_type());
         if ($product && $product->get_type() === 'recurrente') {
           $has_recurrente_product = true;
           error_log('Recurrente Debug: Producto recurrente encontrado en la orden: ' . $product->get_name());
@@ -186,14 +210,18 @@ class Recurrente extends WC_Payment_Gateway {
         }
       }
 
+      error_log('Recurrente Debug: ¿Es orden recurrente? ' . ($has_recurrente_product ? 'Sí' : 'No'));
+
       if ($has_recurrente_product) {
         error_log('Recurrente Debug: Usando Subscription_Checkout para orden recurrente');
         $subscription_checkout = new Subscription_Checkout($order);
         $result = $subscription_checkout->create();
+        error_log('Recurrente Debug: Resultado de Subscription_Checkout: ' . json_encode($result));
       } else {
         error_log('Recurrente Debug: Usando Single_Checkout para orden normal');
         $single_checkout = new Single_Checkout($order);
         $result = $single_checkout->create();
+        error_log('Recurrente Debug: Resultado de Single_Checkout: ' . json_encode($result));
       }
       
       if (is_wp_error($result)) {
@@ -216,6 +244,7 @@ class Recurrente extends WC_Payment_Gateway {
       error_log('Recurrente Debug: Excepción en process_payment - ' . $e->getMessage());
       return new WP_Error('exception', $e->getMessage());
     }
+    error_log('Recurrente Debug: ===== FIN DE PROCESS_PAYMENT =====');
   }
   
   /**

@@ -69,22 +69,28 @@ class Subscription_Checkout {
     */
     public function create(){
         try {
-            $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/subscription';
-            error_log('Recurrente Debug: Creando checkout de suscripción en: ' . $url);
+            error_log('Recurrente Debug: ===== INICIO DE CREATE SUBSCRIPTION CHECKOUT =====');
+            //$url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/subscription';
+            $url = 'http://localhost:8080/api/checkouts/';
+            error_log('Recurrente Debug: URL del endpoint: ' . $url);
             
             $curl = $this->get_curl();
             $checkout = $this->get_api_model();
             error_log('Recurrente Debug: Datos del checkout: ' . json_encode($checkout));
             
+            error_log('Recurrente Debug: Enviando petición al endpoint...');
             $response = $curl->execute_post($url, $checkout);
-            error_log('Recurrente Debug: Respuesta del checkout: ' . json_encode($response));
+            error_log('Recurrente Debug: Respuesta del endpoint: ' . json_encode($response));
             
             $this->code = $response['code'];
+            error_log('Recurrente Debug: Código de respuesta: ' . $this->code);
+            
             if($this->code == 201){
                 $this->id = $response['body']->id;
                 $this->product_id = $response['body']->product;
                 $this->url = $response['body']->url;
                 error_log('Recurrente Debug: Checkout creado exitosamente - ID: ' . $this->id);
+                error_log('Recurrente Debug: URL de redirección: ' . $this->url);
                 return true;
             } else if ($this->code == 401) {
                 error_log('Recurrente Debug: Error 401 - Token inválido o expirado');
@@ -111,6 +117,7 @@ class Subscription_Checkout {
             error_log('Recurrente Debug: Excepción en create() - ' . $e->getMessage());
             return new WP_Error('error', $e->getMessage());
         }
+        error_log('Recurrente Debug: ===== FIN DE CREATE SUBSCRIPTION CHECKOUT =====');
     }
 
     /**
@@ -124,7 +131,8 @@ class Subscription_Checkout {
     */
     public function clean(){
         try {
-            $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/products/'.$this->product_id;
+            // $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/products/'.$this->product_id;
+            $url = 'http://localhost:8080/api/checkouts/'.$this->product_id;
             $curl = $this->get_curl();
             $response = $curl->execute_delete($url);
             return $response['code'];

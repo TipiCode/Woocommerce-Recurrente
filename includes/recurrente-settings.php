@@ -82,7 +82,7 @@ class RecurrenteSettings
 
     // Función para obtener y almacenar el token
     public static function obtener_y_almacenar_token($public_key, $secret_key) {
-        error_log('Recurrente Debug: Iniciando obtención de token');
+        error_log('Recurrente Debug: ===== INICIO DE OBTENCIÓN DE TOKEN =====');
         error_log('Recurrente Debug: Endpoint: https://aurora.codingtipi.com/pay/v2/recurrente/setup');
         
         if (empty($public_key) || empty($secret_key)) {
@@ -92,7 +92,8 @@ class RecurrenteSettings
             return new WP_Error('invalid_credentials', 'Las credenciales de Recurrente son inválidas');
         }
 
-        $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/setup';
+        //$url = 'https://aurora.codingtipi.com/pay/v2/recurrente/setup';
+        $url = 'http://localhost:8080/api/auth/token';
         $data = array(
             'publicKey' => $public_key,
             'secretKey' => $secret_key
@@ -104,6 +105,7 @@ class RecurrenteSettings
             'secretKey' => substr($secret_key, 0, 5) . '...'
         )));
 
+        error_log('Recurrente Debug: Configurando petición HTTP...');
         $response = wp_remote_post($url, array(
             'body' => json_encode($data),
             'headers' => array('Content-Type' => 'application/json'),
@@ -131,15 +133,47 @@ class RecurrenteSettings
             error_log('Recurrente Debug: Error al obtener token - Código: ' . $code . ', Mensaje: ' . $error_message);
             return new WP_Error('token_error', $error_message);
         }
+        error_log('Recurrente Debug: ===== FIN DE OBTENCIÓN DE TOKEN =====');
     }
 
     // Función para inicializar acciones
     public static function init_actions() {
-        add_action('update_option_recurrente_settings', function($old_value, $value, $option) {
+        add_action('update_option_woocommerce_recurrente_settings', function($old_value, $value, $option) {
+            error_log('Recurrente Debug: Actualizando configuración de WooCommerce');
+            error_log('Recurrente Debug: Nueva configuración: ' . json_encode($value));
+            
             if (isset($value['public_key']) && isset($value['secret_key'])) {
+                // Guardar las credenciales en ambas opciones para compatibilidad
+                update_option('recurrente_settings', array(
+                    'public_key' => $value['public_key'],
+                    'secret_key' => $value['secret_key']
+                ));
+                
+                error_log('Recurrente Debug: Credenciales guardadas en recurrente_settings');
                 RecurrenteSettings::obtener_y_almacenar_token($value['public_key'], $value['secret_key']);
             }
         }, 10, 3);
+        
+        // Verificar si las credenciales existen al cargar el plugin
+        add_action('plugins_loaded', function() {
+            error_log('Recurrente Debug: Verificando configuración al cargar el plugin');
+            $woocommerce_settings = get_option('woocommerce_recurrente_settings');
+            $recurrente_settings = get_option('recurrente_settings');
+            
+            error_log('Recurrente Debug: Configuración de WooCommerce: ' . json_encode($woocommerce_settings));
+            error_log('Recurrente Debug: Configuración de Recurrente: ' . json_encode($recurrente_settings));
+            
+            // Si no hay configuración en recurrente_settings pero sí en woocommerce_recurrente_settings
+            if (empty($recurrente_settings) && !empty($woocommerce_settings)) {
+                if (isset($woocommerce_settings['public_key']) && isset($woocommerce_settings['secret_key'])) {
+                    update_option('recurrente_settings', array(
+                        'public_key' => $woocommerce_settings['public_key'],
+                        'secret_key' => $woocommerce_settings['secret_key']
+                    ));
+                    error_log('Recurrente Debug: Credenciales migradas desde WooCommerce');
+                }
+            }
+        });
     }
 }
 // Llamar a la función de inicialización
