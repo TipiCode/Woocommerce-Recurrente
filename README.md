@@ -1,8 +1,7 @@
-![Main Banner](https://tipi-pod.sfo3.cdn.digitaloceanspaces.com/github%2Frecurrente-gateway-banner.jpg)
+![Main Banner](https://tipi-pod.sfo3.cdn.digitaloceanspaces.com/github/Woo-Recurrente/woo-rec.jpg)
 
 ![Contributors](https://img.shields.io/github/contributors/TipiCode/Woocommerce-Recurrente?color=%2349C8F1&label=Contribuidores&style=for-the-badge)
 ![Errores](https://img.shields.io/github/issues/TipiCode/Woocommerce-Recurrente?color=%23F99D25&style=for-the-badge)
-![Licencia](https://img.shields.io/github/license/TipiCode/Woocommerce-Recurrente?color=%23A4CD39&label=Licencia&style=for-the-badge)
 ![Froks](https://img.shields.io/github/forks/TipiCode/Woocommerce-Recurrente?color=%2349C8F1&style=for-the-badge)
 ![Version](https://img.shields.io/github/v/release/TipiCode/Woocommerce-Recurrente?color=%23F99D25&label=Ultima%20versi%C3%B3n&style=for-the-badge)
 
@@ -31,10 +30,10 @@ Este plugin es parte de un esfuerzo conjunto para desarrollar implementaciones p
 El proyecto es hecho para funcionar con Wordpress y WooCommerce, siendo una de la plataforma de comercio electrónico más grande por el momento. Tenemos planes de enfocar nuestros esfuerzos para probar la compatibilidad con versiones mayores de ambas plataformas, si deseas agregar la compatibilidad para una versión no soportada ¡Enhorabuena! Estamos aquí para apoya cualquier actualización que desees realizar.
 
 Soporte para Versiones de Wordpress:
-- 6.4.3
+- 6.8.1
 
 Soporte para Versiones de Woocommerce:
-- 8.6.1
+- 9.8.5
 
 Soporte para Versiones de Php:
 - 8.3
@@ -77,10 +76,10 @@ Si tienes alguna duda puedes comunicarte con nosotros, trataremos de solucionar 
 # ¿Como contribuir?
 Si buscas contribuir en alguno de nuestros proyectos lo puedes hacer de una manera muy fácil, únicamente necesitaras seguir estos 4 pasos.
 
-1. Haz click en la opción de ¨Fork¨ , o bien puedes precionar ![Aquí](https://github.com/TipiCode/Woocommerce-Recurrente/fork)
+1. Haz click en la opción de ¨Fork¨ , o bien puedes precionar [Aquí](https://github.com/TipiCode/Woocommerce-Recurrente/fork)
 2. Crea un nuevo branch en el area de branches de github.
 3. Nombre tu nuevo branch con un nombre que refleje tu contribución ¨Super mega nueva funcionalidad 3000¨
-4. Desarrolla tu cambio y al terminar crea un ¨pull request¨ para poder subir tu nueva funcionalidad, para eso preciona ![Aquí](https://github.com/TipiCode/Woocommerce-Recurrente/pulls)
+4. Desarrolla tu cambio y al terminar crea un ¨pull request¨ para poder subir tu nueva funcionalidad, para eso preciona [Aquí](https://github.com/TipiCode/Woocommerce-Recurrente/pulls)
 
 Si no eres un desarrollador ¡No te preocupes! Aun puedes contribuir de diferentes maneras, puedes apoyarnos a hacer llegar estas librerías a muchas más personas no únicamente en el área de desarrollo, acá te dejamos las demás áreas donde puedes contribuir con este proyecto.
 
