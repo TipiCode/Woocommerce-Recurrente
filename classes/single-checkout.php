@@ -26,6 +26,7 @@ class Single_Checkout {
         $this->gateway = Recurrente::get_instance();
         $this->customer_order = $customer_order;
         $this->curl = null;
+        $this->handleApiError = null;
     }
 
     /**
@@ -37,6 +38,16 @@ class Single_Checkout {
             $this->curl = new Curl($token);
         }
         return $this->curl;
+    }
+
+    /**
+    * Obtiene una instancia del error handler
+    */
+    private function get_handleApiError() {
+        if ($this->handleApiError === null) {
+            $this->handleApiError = new handleApiError();
+        }
+        return $this->handleApiError;
     }
 
     /**
@@ -53,11 +64,13 @@ class Single_Checkout {
             $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/checkouts/hosted/single';
             //$url = 'http://localhost:8080/api/checkouts/';
             $curl = $this->get_curl();
+            $handleApiError = $this->get_handleApiError();
             $checkout = $this->get_api_model();
             $response = $curl->execute_post($url, $checkout);
             
             $this->code = $response['code'];
-            if($this->code == 201){
+            error_log($response['code']);
+            if($this->code == 201 || $this->code == 200){
                 $this->id = $response['body']->id;
                 $this->url = $response['body']->url;
                 return true;
@@ -65,6 +78,7 @@ class Single_Checkout {
                 return $response['body']->message;
             }
         } catch (Exception $e) {
+            $handleApiError->reportAuroraIssue($e);
             return new WP_Error('error', $e->getMessage());
         }
     }
@@ -85,6 +99,7 @@ class Single_Checkout {
             $response = $curl->execute_delete($url);
             return $response['code'];
         } catch (Exception $e) {
+            $handleApiError->reportAuroraIssue($e);
             return new WP_Error('error', $e->getMessage());
         }
     }
@@ -101,20 +116,45 @@ class Single_Checkout {
         $installments = !empty( $this->gateway->get_option('installments')) ? str_replace(' Meses', '', join(',', $this->gateway->get_option('installments'))) : '';
         $transfers = $this->gateway->get_option('allow_transfer') == 'yes' ? true : false;
 
+        //return Array(
+        //        "number"  => $this->customer_order->get_order_number(),
+        //        "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
+        //        "correlative"  => $this->customer_order->get_id(),
+        //        "amount" => $this->customer_order->get_total(),
+        //        "currency"  => $this->customer_order->get_currency(),
+        //        "allowTransfer"  => $transfers,
+        //        "installments"  => $installments,
+        //        "billing" => Array(
+        //            "name" => $this->customer_order->get_billing_first_name(),
+        //            "surname" => $this->customer_order->get_billing_last_name(),
+        //            "email" => $this->customer_order->get_billing_email(),
+        //            "phone" => $this->customer_order->get_billing_phone()
+        //        )
+        //);
+
         return Array(
-                "number"  => $this->customer_order->get_order_number(),
-                "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
-                "correlative"  => $this->customer_order->get_id(),
-                "amount" => $this->customer_order->get_total(),
-                "currency"  => $this->customer_order->get_currency(),
+            "number"  => $this->customer_order->get_order_number(),
+            "description"  => "Orden número ".$this->customer_order->get_order_number().'. al finalizar tu pago seras redirigido de vuelta al comerció para procesar tu orden.',
+            "correlative"  => $this->customer_order->get_id(),
+            "amount" => $this->customer_order->get_total(),
+            "currency"  => $this->customer_order->get_currency(),
+            "billing" => Array(
+                "name" => $this->customer_order->get_billing_first_name(),
+                "surname" => $this->customer_order->get_billing_last_name(),
+                //"taxId" => $this->customer_order->get_billing_tax_id(); ???? como consigo el tax id
+
+                "email" => $this->customer_order->get_billing_email(),
+                "phone" => $this->customer_order->get_billing_phone(),
+                "address" => $this->customer_order->get_billing_address_1() . ", " . $this->customer_order->get_billing_address_2()
+            ),
+            //"redirection" => Array(
+            //    "successUrl" => "/thank-you",
+            //    "cancelUrl" => "/checkout"
+            //),
+            "options" => Array(
                 "allowTransfer"  => $transfers,
                 "installments"  => $installments,
-                "billing" => Array(
-                    "name" => $this->customer_order->get_billing_first_name(),
-                    "surname" => $this->customer_order->get_billing_last_name(),
-                    "email" => $this->customer_order->get_billing_email(),
-                    "phone" => $this->customer_order->get_billing_phone()
-                )
+            )
         );
     }
 }

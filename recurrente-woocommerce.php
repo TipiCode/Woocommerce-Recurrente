@@ -41,6 +41,10 @@ function recurrente_init() {
         error_log('Recurrente Debug: Cargando clase Curl');
         require_once RECURRENTE_PLUGIN_DIR . '/utils/curl.php';
     }
+
+    if (!class_exists('HandleApiError')) {
+      require_once RECURRENTE_PLUGIN_DIR . '/utils/handleApiError.php';
+    }
     
     error_log('Recurrente Debug: Cargando clases principales');
     require_once RECURRENTE_PLUGIN_DIR . '/classes/recurrente.php';
@@ -388,6 +392,12 @@ add_action( 'woocommerce_process_product_meta', 'recurrente_save_subscription_pr
 function validate_recurrente_cart($passed, $product_id, $quantity) {
     $product = wc_get_product($product_id);
     $is_recurrente = $product->get_type() === 'recurrente';
+
+    // Si el producto es recurrente y hay otros productos en el carrito, limpiar el carrito
+    if ($is_recurrente && !WC()->cart->is_empty()) {
+        WC()->cart->empty_cart();
+        wc_add_notice('Se ha limpiado el carrito para agregar la suscripción.', 'notice');
+    }
 
     foreach (WC()->cart->get_cart() as $cart_item) {
         $cart_product = $cart_item['data'];

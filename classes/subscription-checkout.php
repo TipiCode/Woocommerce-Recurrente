@@ -59,6 +59,16 @@ class Subscription_Checkout {
     }
 
     /**
+    * Obtiene una instancia del error handler
+    */
+    private function get_handleApiError() {
+        if ($this->handleApiError === null) {
+            $this->handleApiError = new handleApiError();
+        }
+        return $this->handleApiError;
+    }
+
+    /**
     * Crea un nuevo Checkout de suscripción
     * 
     * @throws Exception Si la llamada a recurrente falla
@@ -114,7 +124,7 @@ class Subscription_Checkout {
                 return $response['body']->message;
             }
         } catch (Exception $e) {
-            error_log('Recurrente Debug: Excepción en create() - ' . $e->getMessage());
+            $handleApiError->reportAuroraIssue($e);
             return new WP_Error('error', $e->getMessage());
         }
         error_log('Recurrente Debug: ===== FIN DE CREATE SUBSCRIPTION CHECKOUT =====');
@@ -134,9 +144,11 @@ class Subscription_Checkout {
             // $url = 'https://aurora.codingtipi.com/pay/v2/recurrente/products/'.$this->product_id;
             $url = 'http://localhost:8080/api/checkouts/'.$this->product_id;
             $curl = $this->get_curl();
+            $handleApiError = $this->get_handleApiError();
             $response = $curl->execute_delete($url);
             return $response['code'];
         } catch (Exception $e) {
+            $handleApiError->reportAuroraIssue($e);
             return new WP_Error('error', $e->getMessage());
         }
     }

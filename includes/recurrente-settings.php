@@ -70,14 +70,22 @@ class RecurrenteSettings
                 'title'       => __( 'Estado Predeterminado de la orden', 'my-text-domain' ),
                 'type'        => 'select',
                 'description' => __( 'Selecciona el estado predeterminado para las órdenes procesadas.', 'my-text-domain' ),
-                'options'     => array( //TODO Llenar esta lista con $order_statuses = wc_get_order_statuses(); y filtrar el array para omitir wc-cancelled, wc-refunded, wc-failed
-                    'wc-completed'  => __( 'Completada', 'my-text-domain' ),
-                    'wc-on-hold'    => __( 'En espera', 'my-text-domain' ),
-                    'wc-cancelled'  => __( 'Cancelada', 'my-text-domain' ),
-                ),
+                'options'     => self::get_filtered_order_statuses(),
                 'default'     => 'wc-completed',
             ),
         );    
+    }
+
+    /**
+     * Obtiene los estados de orden filtrados
+     * 
+     * @return array Estados de orden filtrados
+     */
+    private static function get_filtered_order_statuses() {
+        $order_statuses = wc_get_order_statuses();
+        $excluded_statuses = array('wc-cancelled', 'wc-refunded', 'wc-failed');
+        
+        return array_diff_key($order_statuses, array_flip($excluded_statuses));
     }
 
     // Función para obtener y almacenar el token

@@ -31,7 +31,8 @@ class Recurrente extends WC_Payment_Gateway {
     $this->icon = $this->get_option('icon');
     $this->has_fields = false;
     $this->description = "<img src".$this->icon."/>";
-      
+    $this->handleApiError = null;  
+
     // Define los campos a utilizar en el formulario de configuración
     $this->init_form_fields();
     // Carga de Variables
@@ -58,6 +59,16 @@ class Recurrente extends WC_Payment_Gateway {
       self::$instance = new self();
     }
     return self::$instance;
+  }
+
+  /**
+    * Obtiene una instancia del error handler
+    */
+    private function get_handleApiError() {
+      if ($this->handleApiError === null) {
+          $this->handleApiError = new handleApiError();
+      }
+      return $this->handleApiError;
   }
 
   /**
@@ -95,9 +106,12 @@ class Recurrente extends WC_Payment_Gateway {
   * @since 1.2.0
   */
   public function redirect_callback(){
+    error_log("redirect callback");
     if (isset($_GET["status"])) {
+      error_log("redirect checkout");
       $this->answer_redirect(); //Esto quiere decir que es el redirect URL del checkout
     }else{
+      error_log("wekhook");
       $this->process_webhook(); //Esto quiere decir que es el Webhook
     }
   }
@@ -169,6 +183,8 @@ class Recurrente extends WC_Payment_Gateway {
       
       $token = get_option('recurrente_api_token');
       error_log('Recurrente Debug: Token actual: ' . (!empty($token) ? substr($token, 0, 10) . '...' : 'no encontrado'));
+
+      $handleApiError = $this->get_handleApiError();
       
       if (empty($token)) {
         error_log('Recurrente Debug: Token no encontrado, intentando obtener uno nuevo');
@@ -194,7 +210,7 @@ class Recurrente extends WC_Payment_Gateway {
           error_log('Recurrente Debug: Nuevo token obtenido: ' . substr($token, 0, 10) . '...');
         } else {
           error_log('Recurrente Debug: Error - No se encontraron las credenciales de API');
-          return new WP_Error('no_credentials', 'No se encontraron las credenciales de API. Por favor, verifica la configuración del plugin.');
+          throw new Exception("No se encontraron las credenciales de API", 1);
         }
       }
 
@@ -238,11 +254,16 @@ class Recurrente extends WC_Payment_Gateway {
         );
       } else {
         error_log('Recurrente Debug: Error en checkout - ' . $result);
-        return new WP_Error('checkout_error', $result);
+        throw new Exception("Error en checkout - " . $result, 1);
+        
       }
     } catch (Exception $e) {
-      error_log('Recurrente Debug: Excepción en process_payment - ' . $e->getMessage());
-      return new WP_Error('exception', $e->getMessage());
+      $handleApiError->reportAuroraIssue($e);
+
+      wc_add_notice('Ocurrió un error al procesar el pago. Por favor intenta nuevamente.', 'error');
+      return array(
+        'result' => 'failure',
+      );
     }
     error_log('Recurrente Debug: ===== FIN DE PROCESS_PAYMENT =====');
   }

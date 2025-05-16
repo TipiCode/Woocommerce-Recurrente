@@ -48,22 +48,37 @@ class RecurrenteResponse
     * @since 1.2.0
     */ 
     public function execute($data){
+        error_log('Recurrente Debug: ===== INICIO DE EXECUTE =====');
+        error_log('Recurrente Debug: Intent recibido: ' . $this->intent);
+        error_log('Recurrente Debug: Datos recibidos: ' . json_encode($data));
+        
         $this->verificar_y_obtener_token();
+        
         if($this->intent === 'payment_intent.failed'){
+            error_log('Recurrente Debug: Ejecutando payment_failed');
             $this->payment_failed($data);
-        }//Fallo el pago con tarjeta de crédito / debito
+        }
         elseif($this->intent === 'payment_intent.succeeded'){
+            error_log('Recurrente Debug: Ejecutando payment_succeeded');
             $this->payment_succeeded($data);
-        }//Se completo el pago con tarjeta de crédito / debito
+        }
         elseif($this->intent === 'bank_transfer_intent.pending'){
+            error_log('Recurrente Debug: Ejecutando bank_transfer_pending');
             $this->bank_transfer_pending($data);
-        }//Se inicio el proceso de transferencia bancaria.
+        }
         elseif($this->intent === 'bank_transfer_intent.succeeded'){
+            error_log('Recurrente Debug: Ejecutando bank_transfer_succeeded');
             $this->bank_transfer_succeeded($data);
-        }//Se completo el pago con transferencia bancaria.
+        }
         elseif($this->intent === 'bank_transfer_intent.failed'){
+            error_log('Recurrente Debug: Ejecutando bank_transfer_failed');
             $this->bank_transfer_failed($data);
-        }//Fallo el pago con transferencia bancaria.
+        }
+        else {
+            error_log('Recurrente Debug: ADVERTENCIA - Intent no reconocido: ' . $this->intent);
+        }
+        
+        error_log('Recurrente Debug: ===== FIN DE EXECUTE =====');
     }
 
     /**
@@ -95,9 +110,24 @@ class RecurrenteResponse
         $checkout_id = $data->checkout->id;
         $success_message = 'Se completo correctamente el pago con tarjeta.';
 
-        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed'; //TODO - Revisar esta linea, hay bugs reportados que dicen que aunque tenga otro status guardado siempre le da completed
+        error_log('Recurrente Debug: ===== INICIO DE PAYMENT_SUCCEEDED =====');
+        error_log('Recurrente Debug: Configuración actual: ' . json_encode($this->settings));
+        
+        $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed';
+        error_log('Recurrente Debug: Estado de orden seleccionado: ' . $order_status);
+        
+        // Verificar si el estado existe en WooCommerce
+        $available_statuses = wc_get_order_statuses();
+        error_log('Recurrente Debug: Estados disponibles en WooCommerce: ' . json_encode($available_statuses));
+        
+        if (!array_key_exists($order_status, $available_statuses)) {
+            error_log('Recurrente Debug: ADVERTENCIA - El estado seleccionado no existe en WooCommerce');
+            $order_status = 'wc-completed';
+            error_log('Recurrente Debug: Estado cambiado a wc-completed por defecto');
+        }
 
         $this->process_order($checkout_id, $order_status, 'Recurrente: '.$success_message, true);
+        error_log('Recurrente Debug: ===== FIN DE PAYMENT_SUCCEEDED =====');
     }
 
     /**
