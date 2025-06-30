@@ -19,17 +19,21 @@ class Curl{
     * @param string $token  Token de autenticación que provee Recurrente.
     * 
     */
-    function __construct($token) {
+    function __construct($token = null) {
         $this->ch = curl_init();
+        $this->token = $token;
         $this->header  = Array(
-            'X-TOKEN:' . $token,
             'X-ORIGIN:' . get_site_url('url'),
             'X-STORE:'.get_bloginfo('name'),
             'Content-type: application/json'
-          );
-        $this->token = $token;
-        $this->debug_enabled = defined('WP_DEBUG') && WP_DEBUG;
-        error_log('Recurrente Debug: Inicializando Curl con token: ' . substr($token, 0, 10) . '...');
+        );
+
+        if($token){
+            $this->header[] = 'X-TOKEN:' . $token;
+            $this->debug_enabled = defined('WP_DEBUG') && WP_DEBUG;
+            error_log('Recurrente Debug: Inicializando Curl con token: ' . substr($token, 0, 10) . '...');
+        }
+
     }
 
     /**

@@ -11,7 +11,7 @@ class HandleApiError {
         //string $appId, 
         string $friendlyMsg = "Oops! Ocurrió un error", 
         string $projectUrl = "https://github.com/TipiCode/Woocommerce-Recurrente", 
-        string $version = "v2.1.1"
+        string $version = "2.0.3"
         )
     {
         $trace = $e->getTrace();
@@ -31,7 +31,7 @@ class HandleApiError {
 
         error_log("Payload: " . json_encode($payload));
         $ch = curl_init('https://aurora.codingtipi.com/support/v1/issues');
-        $appId = "725fc065-3b13-47e5-8d23-39d2547a967";
+        $appId = "725fc065-3b13-47e5-8d23-39d2547a967d";
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
