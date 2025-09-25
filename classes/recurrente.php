@@ -117,6 +117,8 @@ class Recurrente extends WC_Payment_Gateway {
     if($status_id == 1){ //El pago fue exitoso
       $redirect_url = $order->get_checkout_order_received_url();
       $order->add_order_note( 'Recurrente: '.'La transacción fue completada por el usuario.' );
+      $order_status = isset($this->settings['order_status']) ? $this->settings['order_status'] : 'wc-completed';
+      $order->update_status( $order_status );
       wp_safe_redirect($redirect_url);
     }else if ($status_id == 0){ //La operación fue cancelada
       $checkout_url = add_query_arg( [
